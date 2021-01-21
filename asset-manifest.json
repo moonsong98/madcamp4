@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/madcamp4/static/css/main.8c8b27cf.chunk.css",
+    "main.js": "/madcamp4/static/js/main.dd333433.chunk.js",
+    "main.js.map": "/madcamp4/static/js/main.dd333433.chunk.js.map",
+    "runtime-main.js": "/madcamp4/static/js/runtime-main.2272bdc7.js",
+    "runtime-main.js.map": "/madcamp4/static/js/runtime-main.2272bdc7.js.map",
+    "static/js/2.bf36f56f.chunk.js": "/madcamp4/static/js/2.bf36f56f.chunk.js",
+    "static/js/2.bf36f56f.chunk.js.map": "/madcamp4/static/js/2.bf36f56f.chunk.js.map",
+    "static/js/3.7dac3470.chunk.js": "/madcamp4/static/js/3.7dac3470.chunk.js",
+    "static/js/3.7dac3470.chunk.js.map": "/madcamp4/static/js/3.7dac3470.chunk.js.map",
+    "index.html": "/madcamp4/index.html",
+    "static/css/main.8c8b27cf.chunk.css.map": "/madcamp4/static/css/main.8c8b27cf.chunk.css.map",
+    "static/js/2.bf36f56f.chunk.js.LICENSE.txt": "/madcamp4/static/js/2.bf36f56f.chunk.js.LICENSE.txt",
+    "static/media/logo.6ce24c58.svg": "/madcamp4/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2272bdc7.js",
+    "static/js/2.bf36f56f.chunk.js",
+    "static/css/main.8c8b27cf.chunk.css",
+    "static/js/main.dd333433.chunk.js"
+  ]
+}
