@@ -10,6 +10,15 @@ function AdminLoginpage() {
 
 	const submitHandler = (event: React.FormEvent) => {
 		event?.preventDefault();
+		axios({
+			method: 'post',
+			url: 'http://192.249.18.244:8080/auth/login',
+			data: {
+				username: loginInput.username,
+				password: loginInput.password,
+				role: 'admin',
+			},
+		}).then((res) => setJWTToken(res.data.token));
 		setJWTToken('test');
 		// login 정보 저장
 	};
