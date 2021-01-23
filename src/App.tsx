@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, useHistory, Route } from 'react-router-dom';
+import { BrowserRouter as Router, useHistory, Route, Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import AdministratorPage from './pages/AdministratorPage';
+import AdminManagementPage from './pages/AdminManagementPage';
 import AdminLoginPage from './pages/AdminLoginPage';
-import UserContext from './contexts/UserContext';
+import { getLoginStatus } from './Auth/Authorization';
 
 function Home() {
 	const history = useHistory();
@@ -26,14 +27,21 @@ function Home() {
 }
 
 function App() {
-	const [JWTToken, setJWTToken] = useState<string>('');
 	return (
 		<Router>
-			<UserContext.Provider value={{ JWTToken, setJWTToken }}>
-				<Route exact path="/" component={Home} />
-				<Route path="/Administrator" component={AdministratorPage} />
-				<Route path="/AdminLogin" component={AdminLoginPage} />
-			</UserContext.Provider>
+			<Route exact path="/" component={Home} />
+			<Route path="/Administrator" component={AdministratorPage} />
+			<Route
+				path="/AdminLogin"
+				render={(props) =>
+					getLoginStatus().role === 'admin' ? (
+						<Redirect to={{ pathname: '/AdminManagejment', state: { from: props.location } }} />
+					) : (
+						<AdminLoginPage />
+					)
+				}
+			/>
+			<Route path="/AdminManagement" component={AdminManagementPage} />
 		</Router>
 	);
 }

@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, TextField } from '@material-ui/core';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import LoginTypes from '../types/LoginTypes';
-import UserContext from '../contexts/UserContext';
+import { LoginResponseType } from '../types/ResponseTypes';
+import { login, getLoginStatus } from '../Auth/Authorization';
 
 function AdminLoginpage() {
 	const [loginInput, setLoginInput] = useState<LoginTypes>({ username: '', password: '' });
-	const { JWTToken, setJWTToken } = useContext(UserContext);
 
 	const submitHandler = (event: React.FormEvent) => {
 		event?.preventDefault();
@@ -18,10 +18,14 @@ function AdminLoginpage() {
 				password: loginInput.password,
 				role: 'admin',
 			},
-		}).then((res) => setJWTToken(res.data.token));
-		setJWTToken('test');
-		// login 정보 저장
+		}).then((res: AxiosResponse<LoginResponseType>) => {
+			login(res.data);
+		});
 	};
+
+	useEffect(() => {
+		console.log(getLoginStatus());
+	});
 
 	return (
 		<form onSubmit={submitHandler}>
@@ -45,7 +49,7 @@ function AdminLoginpage() {
 				/>
 			</div>
 			<Button type="submit">Login</Button>
-			<p>{JWTToken}</p>
+			<p>{JSON.stringify(getLoginStatus)}</p>
 		</form>
 	);
 }
