@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import LoginTypes from '../types/LoginTypes';
+import UserContext from '../contexts/UserContext';
 
 function AdminLoginpage() {
 	const [loginInput, setLoginInput] = useState<LoginTypes>({ username: '', password: '' });
+	const { JWTToken, setJWTToken } = useContext(UserContext);
 
 	const submitHandler = (event: React.FormEvent) => {
 		event?.preventDefault();
+		setJWTToken('test');
 		// login 정보 저장
 	};
 
@@ -33,6 +36,7 @@ function AdminLoginpage() {
 				/>
 			</div>
 			<Button type="submit">Login</Button>
+			<p>{JWTToken}</p>
 		</form>
 	);
 }
