@@ -1,31 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios, { AxiosResponse } from 'axios';
-import LoginTypes from '../types/LoginTypes';
+import { LoginInput } from '../types/AuthTypes';
 import { LoginResponseType } from '../types/ResponseTypes';
-import { login, getLoginStatus } from '../Auth/Authorization';
+import UserContext from '../contexts/UserContext';
+import { SERVER_URL } from '../config';
 
 function AdminLoginpage() {
-	const [loginInput, setLoginInput] = useState<LoginTypes>({ username: '', password: '' });
+	const [loginInput, setLoginInput] = useState<LoginInput>({ username: '', password: '' });
+	const { setUserStatus } = useContext(UserContext);
 
 	const submitHandler = (event: React.FormEvent) => {
 		event?.preventDefault();
 		axios({
 			method: 'post',
-			url: 'http://192.249.18.244:8080/auth/login',
+			url: `${SERVER_URL}/auth/login`,
 			data: {
 				username: loginInput.username,
 				password: loginInput.password,
 				role: 'admin',
 			},
 		}).then((res: AxiosResponse<LoginResponseType>) => {
-			login(res.data);
+			setUserStatus({ accessToken: res.data.token, role: res.data.role });
 		});
 	};
-
-	useEffect(() => {
-		console.log(getLoginStatus());
-	});
 
 	return (
 		<form onSubmit={submitHandler}>
@@ -49,7 +47,6 @@ function AdminLoginpage() {
 				/>
 			</div>
 			<Button type="submit">Login</Button>
-			<p>{JSON.stringify(getLoginStatus)}</p>
 		</form>
 	);
 }

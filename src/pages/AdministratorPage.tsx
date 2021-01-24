@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import ConvertXlsxToJson from '../utils/ConvertXlsxToJson';
 import axios from 'axios';
 import { Restaurant } from '../types/RestaurantTypes';
+import { SERVER_URL } from '../config';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -68,7 +69,7 @@ function AdministratorPage() {
 	};
 
 	const submitButtonHandler = () => {
-		axios.post('http://192.249.18.244:8080/restaurant/', restaurantInformation).catch((err) => console.error(err));
+		axios.post(`${SERVER_URL}/restaurant/`, restaurantInformation).catch((err) => console.error(err));
 	};
 
 	const showMenus = () => {
