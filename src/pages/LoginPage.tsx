@@ -21,7 +21,7 @@ function LoginPage() {
 			data: {
 				username: loginInput.username,
 				password: loginInput.password,
-				role: '',
+				role: 'restaurantOwner',
 			},
 		})
 			.then((res) => {
@@ -33,7 +33,9 @@ function LoginPage() {
 							isInitialPassword: res.data.isInitialPassword,
 					  });
 				if (res.data.role === 'restaurantOwner') {
-					res.data.isInitialPassword ? history.push('/RestaurantOwnerChangePassword') : history.push('/Administrator');
+					res.data.isInitialPassword
+						? history.push('/RestaurantOwnerChangePassword')
+						: history.push('/RestaurantInformationInput');
 				}
 			})
 			.catch((error) => {

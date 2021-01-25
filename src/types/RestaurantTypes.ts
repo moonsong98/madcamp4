@@ -15,8 +15,8 @@ export interface Restaurant {
 	description: string;
 	telephone: string;
 	menus: Menu[];
-	openTime: Date;
-	closeTime: Date;
+	openTime: string[];
+	closeTime: string[];
 	location: string;
 	comment?: [];
 }

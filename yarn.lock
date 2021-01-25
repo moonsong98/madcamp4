@@ -9269,6 +9269,14 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
+react-daum-postcode@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-daum-postcode/-/react-daum-postcode-2.0.2.tgz#7adc21173f9567f86d1ea0aafd3b5b1c63e9ec66"
+  integrity sha512-K1ScGNJeIk8lUqGf3mSn3flD1zJ+PmH1G54FplHxywlyKp8uG/+xrP1VEgDHKYBFJtpuiHvIUaJDFAh8m8zX9g==
+  dependencies:
+    prop-types "^15.6.2"
+    react "^16.4.2"
+
 react-dev-utils@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.1.tgz#30106c2055acfd6b047d2dc478a85c356e66fe45"
@@ -9322,6 +9330,13 @@ react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
+
+react-new-window@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-new-window/-/react-new-window-0.1.2.tgz#8c04392e669b16e64d68f46bb9d58666e4f753d4"
+  integrity sha512-KfjR6QupGf4UZCK7ittUE7r53eOax9mw0ODQIhDSxu4dzxWgeE9y95MRs8Dr9m/F7Plm3LUvccO5yGbg3619yA==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-refresh@^0.8.3:
   version "0.8.3"
@@ -9431,6 +9446,15 @@ react-transition-group@^4.4.0:
     "@babel/runtime" "^7.5.5"
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
+    prop-types "^15.6.2"
+
+react@^16.4.2:
+  version "16.14.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
+  integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
     prop-types "^15.6.2"
 
 react@^17.0.1:

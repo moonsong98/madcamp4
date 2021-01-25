@@ -13,6 +13,7 @@ import ConvertXlsxToJson from '../utils/ConvertXlsxToJson';
 import axios from 'axios';
 import { Restaurant } from '../types/RestaurantTypes';
 import { SERVER_URL } from '../config';
+import AddressSearch from '../component/AddressSearchComponent';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -28,7 +29,7 @@ const useStyles = makeStyles(() =>
 const greetingMessage = (collegeName: string) =>
 	`저희 ${collegeName}과 계약하신 것을 환영합니다, 아래 내용을 기입하신 후 승인 신청 버튼을 눌러주세요.\n검토 후 승인 완료 시 사이트에 가게 내용이 표시됩니다.`;
 
-function AdministratorPage() {
+function RestaurantInformationInputPage() {
 	const classes = useStyles();
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [restaurantInformation, setRestaurantInformation] = useState<Restaurant>({
@@ -37,8 +38,8 @@ function AdministratorPage() {
 		menus: [],
 		telephone: '',
 		description: '',
-		openTime: new Date(),
-		closeTime: new Date(),
+		openTime: ['', '', '', '', '', '', ''],
+		closeTime: ['', '', '', '', '', '', ''],
 		location: '',
 	});
 
@@ -55,6 +56,8 @@ function AdministratorPage() {
 		'야식',
 		'프랜차이즈',
 	];
+
+	const dayOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
 	const showPreviewButtonHandler = () => {
 		if (selectedFile) {
@@ -149,29 +152,62 @@ function AdministratorPage() {
 					/>
 				</div>
 				<div>
-					<TextField
-						label="여는 시간"
-						type="time"
-						InputLabelProps={{
-							shrink: true,
-						}}
-						inputProps={{
-							step: 300, // 5 min
-						}}
-					/>
+					{dayOfWeek.map((e, index) => {
+						return (
+							<div key={index}>
+								{e}
+								<TextField
+									label="여는 시간"
+									type="time"
+									value={restaurantInformation.openTime[index]}
+									InputLabelProps={{
+										shrink: true,
+									}}
+									inputProps={{
+										step: 300, // 5 min
+									}}
+									onChange={(e) => {
+										const newOpenTime = restaurantInformation.openTime;
+										newOpenTime[index] = e.target.value;
+										setRestaurantInformation({
+											...restaurantInformation,
+											openTime: newOpenTime,
+										});
+									}}
+								/>
+							</div>
+						);
+					})}
 				</div>
 				<div>
-					<TextField
-						label="닫는 시간"
-						type="time"
-						InputLabelProps={{
-							shrink: true,
-						}}
-						inputProps={{
-							step: 300, // 5 min
-						}}
-					/>
+					{dayOfWeek.map((e, index) => {
+						return (
+							<div key={index}>
+								{e}
+								<TextField
+									label="닫는 시간"
+									type="time"
+									value={restaurantInformation.closeTime[index]}
+									InputLabelProps={{
+										shrink: true,
+									}}
+									inputProps={{
+										step: 300, // 5 min
+									}}
+									onChange={(e) => {
+										const newCloseTime = restaurantInformation.closeTime;
+										newCloseTime[index] = e.target.value;
+										setRestaurantInformation({
+											...restaurantInformation,
+											closeTime: newCloseTime,
+										});
+									}}
+								/>
+							</div>
+						);
+					})}
 				</div>
+				<AddressSearch />
 				<div>
 					<input type="file" onChange={(e) => setSelectedFile(e.target.files && e.target.files[0])} accept=".xlsx" />
 				</div>
@@ -185,4 +221,4 @@ function AdministratorPage() {
 	);
 }
 
-export default AdministratorPage;
+export default RestaurantInformationInputPage;

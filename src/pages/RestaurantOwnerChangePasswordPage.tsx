@@ -3,10 +3,12 @@ import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import UserContext from '../contexts/UserContext';
 import { SERVER_URL } from '../config';
+import { useHistory } from 'react-router-dom';
 
 function RestaurantOwnerChangePasswordPage() {
 	const [newPassword, setNewPassword] = useState('');
 	const { userStatus, setUserStatus } = useContext(UserContext);
+	const history = useHistory();
 	const submitHandler = () => {
 		axios({
 			method: 'post',
@@ -20,6 +22,7 @@ function RestaurantOwnerChangePasswordPage() {
 		})
 			.then((res) => {
 				console.log(res);
+				history.push('/restaurantinformationinput');
 			})
 			.catch((err) => {
 				console.log(err.request.response);
