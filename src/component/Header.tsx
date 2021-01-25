@@ -31,12 +31,12 @@ function Header() {
 		setUserStatus({ accessToken: '', role: '' });
 	};
 
-	const loginButtonOrProfileMenu = () => {};
 	return (
 		<AppBar className={classes.root} position="static">
 			<Toolbar>
-				<p>배달음식</p>
-				{loginButtonOrProfileMenu()}
+				<Link to="/">
+					<p>배달음식</p>
+				</Link>
 				{userStatus.accessToken.length > 0 ? (
 					<div>
 						<IconButton
