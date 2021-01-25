@@ -1,4 +1,5 @@
-import { Box, Grid } from '@material-ui/core';
+import { Box, Button, Grid, Paper } from '@material-ui/core';
+import { createStyles, fade, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useContext, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { SERVER_URL } from '../config';
@@ -7,15 +8,23 @@ import { useHistory } from 'react-router-dom';
 import { CategoryResponseType } from '../types/ResponseTypes';
 
 const defaultProps = {
-	bgcolor: 'background.paper',
-	borderColor: 'text.primary',
-	m: 1,
-	border: 1,
-	style: { width: '5rem', height: '5rem' },
+	style: { width: '6rem', height: '4rem' },
 };
+const useStyles = makeStyles((theme: Theme) =>
+	createStyles({
+		root: {
+			flex: 1,
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			marginLeft: '20%',
+			marginRight: '20%',
+		},
+	})
+);
 
 function CategoryListPage() {
 	const url = `${SERVER_URL}/category`;
+	const classes = useStyles();
 	const history = useHistory();
 	const { userStatus } = useContext(UserContext);
 	const [categoryList, setCategoryList] = useState<CategoryResponseType[]>([]);
@@ -30,23 +39,24 @@ function CategoryListPage() {
 	}, [url]);
 
 	return (
-		<Box display="flex" justifyContent="center">
-			{categoryList.map((e, index) => {
-				return (
-					<Grid key={index} item xs={3}>
-						<Box
-							borderRadius={16}
-							{...defaultProps}
-							onClick={() => {
-								history.push(`/RestaurantList/${e._id}`);
-							}}
-						>
-							{e.name}
-						</Box>
-					</Grid>
-				);
-			})}
-		</Box>
+		<div>
+			<Paper>
+				<div className={classes.root}>
+					{categoryList.map((e, index) => {
+						return (
+							<Button
+								{...defaultProps}
+								onClick={() => {
+									history.push(`/RestaurantList/${e._id}`);
+								}}
+							>
+								<Box m="auto">{e.name}</Box>
+							</Button>
+						);
+					})}
+				</div>
+			</Paper>
+		</div>
 	);
 }
 
