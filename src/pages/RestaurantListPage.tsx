@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { createStyles, fade, makeStyles, Theme } from '@material-ui/core/styles';
 import { SERVER_URL } from '../config';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { RestaurantResponseType } from '../types/ResponseTypes';
@@ -9,12 +10,23 @@ interface MatchParams {
 	categoryId: string;
 }
 
-interface Props extends RouteComponentProps<MatchParams> {
+interface Props {
 	categoryId: string;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+	createStyles({
+		root: {
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+		},
+	})
+);
+
 function RestaurantListPage(props: Props) {
-	const url = `${SERVER_URL}/restaurant?category=${encodeURI(props.match.params.categoryId)}`;
+	const classes = useStyles();
+	const url = `${SERVER_URL}/restaurant?category=${encodeURI(props.categoryId)}`;
 	const [restaurantList, setRestaurantList] = useState<RestaurantResponseType[]>([]);
 	const history = useHistory();
 	useEffect(() => {
@@ -35,7 +47,7 @@ function RestaurantListPage(props: Props) {
 		});
 	}, [url]);
 	return (
-		<div>
+		<div className={classes.root}>
 			{restaurantList.map((e, index) => {
 				return (
 					<div key={index}>

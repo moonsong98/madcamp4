@@ -12,8 +12,12 @@ const useStyles = makeStyles((theme: Theme) =>
 			flex: 1,
 			justifyContent: 'space-between',
 		},
+		header: {
+			marginLeft: '1%',
+		},
 		menu: {
 			float: 'right',
+			marginRight: '1%',
 		},
 		search: {
 			position: 'relative',
@@ -137,6 +141,7 @@ function Header() {
 		<AppBar position="static">
 			<Toolbar className={classes.root}>
 				<p
+					className={classes.header}
 					onClick={() => {
 						history.push('/');
 					}}

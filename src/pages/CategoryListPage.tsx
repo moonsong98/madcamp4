@@ -6,6 +6,7 @@ import { SERVER_URL } from '../config';
 import UserContext from '../contexts/UserContext';
 import { useHistory } from 'react-router-dom';
 import { CategoryResponseType } from '../types/ResponseTypes';
+import RestaurantListPage from './RestaurantListPage';
 
 const defaultProps = {
 	style: { width: '6rem', height: '4rem' },
@@ -26,6 +27,7 @@ function CategoryListPage() {
 	const url = `${SERVER_URL}/category`;
 	const classes = useStyles();
 	const history = useHistory();
+	const [categoryId, setCategoryId] = useState<string | null>(null);
 	const { userStatus } = useContext(UserContext);
 	const [categoryList, setCategoryList] = useState<CategoryResponseType[]>([]);
 	useEffect(() => {
@@ -47,7 +49,8 @@ function CategoryListPage() {
 							<Button
 								{...defaultProps}
 								onClick={() => {
-									history.push(`/RestaurantList/${e._id}`);
+									// history.push(`/RestaurantList/${e._id}`);
+									setCategoryId(e._id);
 								}}
 							>
 								<Box m="auto">{e.name}</Box>
@@ -56,6 +59,7 @@ function CategoryListPage() {
 					})}
 				</div>
 			</Paper>
+			{categoryId && <RestaurantListPage categoryId={categoryId} />}
 		</div>
 	);
 }
