@@ -1,19 +1,50 @@
 import React, { useContext } from 'react';
-import { AppBar, Button, IconButton, Menu, MenuItem, Toolbar } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { AppBar, Button, IconButton, InputBase, Menu, MenuItem, Toolbar } from '@material-ui/core';
+import { createStyles, fade, makeStyles, Theme } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { AccountCircle } from '@material-ui/icons';
+import SearchIcon from '@material-ui/icons/Search';
 import UserContext from '../contexts/UserContext';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		root: {
 			flex: 1,
-			flexDirection: 'column',
 			justifyContent: 'space-between',
 		},
 		menu: {
 			float: 'right',
+		},
+		search: {
+			position: 'relative',
+			borderRadius: theme.shape.borderRadius,
+			backgroundColor: fade(theme.palette.common.white, 0.15),
+			'&:hover': {
+				backgroundColor: fade(theme.palette.common.white, 0.25),
+			},
+			width: '50%',
+		},
+		searchIcon: {
+			padding: theme.spacing(0, 2),
+			height: '100%',
+			position: 'absolute',
+			pointerEvents: 'none',
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+		},
+		inputRoot: {
+			color: 'inherit',
+		},
+		inputInput: {
+			padding: theme.spacing(1, 1, 1, 0),
+			// vertical padding + font size from searchIcon
+			paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+			transition: theme.transitions.create('width'),
+			width: '100%',
+			[theme.breakpoints.up('md')]: {
+				width: '20ch',
+			},
 		},
 	})
 );
@@ -40,6 +71,22 @@ function Header() {
 			: history.push('/RestaurantInformationInput');
 		handleClose();
 	};
+
+	const renderSearchBar = (
+		<div className={classes.search}>
+			<div className={classes.searchIcon}>
+				<SearchIcon />
+			</div>
+			<InputBase
+				placeholder="Search…"
+				classes={{
+					root: classes.inputRoot,
+					input: classes.inputInput,
+				}}
+				inputProps={{ 'aria-label': 'search' }}
+			/>
+		</div>
+	);
 
 	const renderMenu =
 		userStatus.accessToken.length > 0 ? (
@@ -77,6 +124,7 @@ function Header() {
 		) : (
 			<Button
 				color="inherit"
+				variant="outlined"
 				onClick={() => {
 					history.push('/login');
 				}}
@@ -86,8 +134,8 @@ function Header() {
 		);
 
 	return (
-		<AppBar className={classes.root} position="static">
-			<Toolbar>
+		<AppBar position="static">
+			<Toolbar className={classes.root}>
 				<p
 					onClick={() => {
 						history.push('/');
@@ -95,6 +143,7 @@ function Header() {
 				>
 					배달음식
 				</p>
+				{renderSearchBar}
 				<div className={classes.menu}>{renderMenu}</div>
 			</Toolbar>
 		</AppBar>
