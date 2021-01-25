@@ -36,9 +36,9 @@ function RestaurantListPage(props: Props) {
 	}, [url]);
 	return (
 		<div>
-			{restaurantList.map((e) => {
+			{restaurantList.map((e, index) => {
 				return (
-					<div>
+					<div key={index}>
 						<Button
 							onClick={() => {
 								history.push(`/restaurant/${e._id}`);
