@@ -19,8 +19,8 @@ import RestaurantOwnerChangePasswordPage from './pages/RestaurantOwnerChangePass
 function App() {
 	const [userStatus, setUserStatus] = useState<UserStatus>({ accessToken: '', role: '' });
 	return (
-		<Router>
-			<UserContext.Provider value={{ userStatus, setUserStatus }}>
+		<UserContext.Provider value={{ userStatus, setUserStatus }}>
+			<Router>
 				<Header />
 				<Switch>
 					<Route exact path="/" component={CategoryListPage} />
@@ -47,8 +47,8 @@ function App() {
 					<Route exact path="/SignUp" component={SignUpPage} />
 					<Route path="/" render={() => <div>404</div>} />
 				</Switch>
-			</UserContext.Provider>
-		</Router>
+			</Router>
+		</UserContext.Provider>
 	);
 }
 

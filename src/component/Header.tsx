@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { AppBar, Button, IconButton, Menu, MenuItem, Toolbar } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AccountCircle } from '@material-ui/icons';
 import UserContext from '../contexts/UserContext';
 
@@ -12,11 +12,15 @@ const useStyles = makeStyles(() =>
 			flexDirection: 'column',
 			justifyContent: 'space-between',
 		},
+		menu: {
+			float: 'right',
+		},
 	})
 );
 
 function Header() {
 	const classes = useStyles();
+	const history = useHistory();
 	const { userStatus, setUserStatus } = useContext(UserContext);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -30,8 +34,13 @@ function Header() {
 		handleClose();
 		setUserStatus({ accessToken: '', role: '' });
 	};
+	const handleRestaurantManagementMenu = () => {
+		userStatus.isInitialPassword
+			? history.push('/RestaurantOwnerChangePassword')
+			: history.push('/RestaurantInformationInput');
+		handleClose();
+	};
 
-	console.log(userStatus.accessToken);
 	const renderMenu =
 		userStatus.accessToken.length > 0 ? (
 			<div>
@@ -59,24 +68,34 @@ function Header() {
 					open={open}
 					onClose={handleClose}
 				>
-					<Link to="/">
-						<MenuItem onClick={handleLogout}>Logout</MenuItem>
-					</Link>
+					{userStatus.role === 'restaurantOwner' && (
+						<MenuItem onClick={handleRestaurantManagementMenu}>가게 정보 수정</MenuItem>
+					)}
+					<MenuItem onClick={handleLogout}>로그아웃</MenuItem>
 				</Menu>
 			</div>
 		) : (
-			<Link to="/login">
-				<Button color="inherit">Login</Button>
-			</Link>
+			<Button
+				color="inherit"
+				onClick={() => {
+					history.push('/login');
+				}}
+			>
+				Login
+			</Button>
 		);
 
 	return (
 		<AppBar className={classes.root} position="static">
 			<Toolbar>
-				<Link to="/">
-					<p>배달음식</p>
-				</Link>
-				{renderMenu}
+				<p
+					onClick={() => {
+						history.push('/');
+					}}
+				>
+					배달음식
+				</p>
+				<div className={classes.menu}>{renderMenu}</div>
 			</Toolbar>
 		</AppBar>
 	);

@@ -26,18 +26,9 @@ function LoginPage() {
 			withCredentials: true,
 		})
 			.then((res) => {
-				res.data.isInitialPassword === undefined
-					? setUserStatus({ accessToken: res.data.accessToken, role: res.data.role })
-					: setUserStatus({
-							accessToken: res.data.accessToken,
-							role: res.data.role,
-							isInitialPassword: res.data.isInitialPassword,
-					  });
-				if (res.data.role === 'restaurantOwner') {
-					res.data.isInitialPassword
-						? history.push('/RestaurantOwnerChangePassword')
-						: history.push('/RestaurantInformationInput');
-				}
+				console.log(res);
+				setUserStatus({ ...res.data });
+				history.push('/');
 			})
 			.catch((error) => {
 				console.log(error.response.data.message);
