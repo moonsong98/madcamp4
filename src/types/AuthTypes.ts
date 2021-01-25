@@ -11,3 +11,8 @@ export interface UserStatus {
 	role: string;
 	isInitialPassword?: boolean;
 }
+export interface SignUpStatus {
+	username: string;
+	password: string;
+	nickname: string;
+}

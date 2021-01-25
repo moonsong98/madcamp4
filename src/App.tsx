@@ -7,6 +7,7 @@ import RestaurantInformationInputPage from './pages/RestaurantInformationInputPa
 import AdminManagementPage from './pages/AdminManagementPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
 import Header from './component/Header';
 import UserContext from './contexts/UserContext';
 import { UserStatus } from './types/AuthTypes';
@@ -37,6 +38,7 @@ function App() {
 					/>
 					<Route exact path="/AdminManagement" component={AdminManagementPage} />
 					<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
+					<Route exact path="/SignUp" component={SignUpPage} />
 					<Route path="/" render={() => <div>404</div>} />
 				</Switch>
 			</UserContext.Provider>
