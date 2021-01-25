@@ -9,14 +9,23 @@ export interface MenuSize {
 	price: number;
 }
 
+export interface OpeningHour {
+	openTime: string;
+	closeTime: string;
+}
+
+export interface Location {
+	fullAddress: string;
+	extraAddress: string;
+}
+
 export interface Restaurant {
 	name: string;
 	category: string;
 	description: string;
 	telephone: string;
 	menus: Menu[];
-	openTime: string[];
-	closeTime: string[];
-	location: string;
+	openingHours: OpeningHour[];
+	location: Location;
 	comment?: [];
 }

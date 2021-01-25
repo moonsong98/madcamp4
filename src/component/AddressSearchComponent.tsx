@@ -1,8 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal } from '@material-ui/core';
 import DaumPostCode from 'react-daum-postcode';
+import { Restaurant } from '../types/RestaurantTypes';
+import RestaurantInformationInputPage from '../pages/RestaurantInformationInputPage';
 
-function AddressSearch() {
+interface Props {
+	restaurantInformation: Restaurant;
+	setRestaurantInformation: (restaurantInformation: Restaurant) => void;
+}
+
+function AddressSearch(props: Props) {
 	const [open, setOpen] = useState(false);
 	const [fullAddress, setFullAddress] = useState('');
 	const [zoneCode, setZoneCode] = useState('');
@@ -34,6 +41,13 @@ function AddressSearch() {
 		}
 		setZoneCode(data.zonecode);
 		setFullAddress(fullAddress);
+		props.setRestaurantInformation({
+			...props.restaurantInformation,
+			location: {
+				...props.restaurantInformation.location,
+				fullAddress,
+			},
+		});
 		setOpen(false);
 	};
 
@@ -58,9 +72,17 @@ function AddressSearch() {
 				<div className="addressBox">
 					<input
 						type="text"
-						value={leftAddress}
+						value={props.restaurantInformation.location.extraAddress}
 						name="address"
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => setLeftAddress(event.target.value)}
+						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+							props.setRestaurantInformation({
+								...props.restaurantInformation,
+								location: {
+									...props.restaurantInformation.location,
+									extraAddress: event.target.value,
+								},
+							});
+						}}
 					/>
 				</div>
 			</div>

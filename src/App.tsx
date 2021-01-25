@@ -4,6 +4,7 @@ import './App.css';
 import { BrowserRouter as Router, useHistory, Route, Redirect, Switch } from 'react-router-dom';
 import CategoryListPage from './pages/CategoryListPage';
 import RestaurantInformationInputPage from './pages/RestaurantInformationInputPage';
+import RestaurantManagementPage from './pages/RestaruantManagementPage';
 import AdminManagementPage from './pages/AdminManagementPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import LoginPage from './pages/LoginPage';
@@ -38,6 +39,7 @@ function App() {
 					/>
 					<Route exact path="/AdminManagement" component={AdminManagementPage} />
 					<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
+					<Route exact path="/RestaurantManagement" component={RestaurantManagementPage} />
 					<Route exact path="/SignUp" component={SignUpPage} />
 					<Route path="/" render={() => <div>404</div>} />
 				</Switch>

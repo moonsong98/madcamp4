@@ -8,12 +8,13 @@ import {
 	makeStyles,
 	createStyles,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ConvertXlsxToJson from '../utils/ConvertXlsxToJson';
 import axios from 'axios';
 import { Restaurant } from '../types/RestaurantTypes';
 import { SERVER_URL } from '../config';
 import AddressSearch from '../component/AddressSearchComponent';
+import UserContext from '../contexts/UserContext';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -31,6 +32,7 @@ const greetingMessage = (collegeName: string) =>
 
 function RestaurantInformationInputPage() {
 	const classes = useStyles();
+	const { userStatus, setUserStatus } = useContext(UserContext);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [restaurantInformation, setRestaurantInformation] = useState<Restaurant>({
 		name: '',
@@ -38,9 +40,40 @@ function RestaurantInformationInputPage() {
 		menus: [],
 		telephone: '',
 		description: '',
-		openTime: ['', '', '', '', '', '', ''],
-		closeTime: ['', '', '', '', '', '', ''],
-		location: '',
+		openingHours: [
+			{
+				openTime: '',
+				closeTime: '',
+			},
+			{
+				openTime: '',
+				closeTime: '',
+			},
+			{
+				openTime: '',
+				closeTime: '',
+			},
+			{
+				openTime: '',
+				closeTime: '',
+			},
+			{
+				openTime: '',
+				closeTime: '',
+			},
+			{
+				openTime: '',
+				closeTime: '',
+			},
+			{
+				openTime: '',
+				closeTime: '',
+			},
+		],
+		location: {
+			fullAddress: '',
+			extraAddress: '',
+		},
 	});
 
 	const categoryList = [
@@ -72,7 +105,25 @@ function RestaurantInformationInputPage() {
 	};
 
 	const submitButtonHandler = () => {
-		axios.post(`${SERVER_URL}/restaurant/`, restaurantInformation).catch((err) => console.error(err));
+		const transformedOpeningHours = restaurantInformation.openingHours.map((e, index) => {
+			const openingTimes = e.openTime.split(':');
+			const closingTimes = e.closeTime.split(':');
+			const newOpenTime = `${openingTimes[0]}.${openingTimes[1]}.${index}`;
+			const newCloseTime = `${closingTimes[0]}.${closingTimes[1]}.${index}`;
+			return {
+				openTime: newOpenTime,
+				closeTime: newCloseTime,
+			};
+		});
+		const restaurantInformationForTransfer = { ...restaurantInformation, openingHours: transformedOpeningHours };
+		axios({
+			method: 'post',
+			url: `${SERVER_URL}/restaurant/`,
+			data: { ...restaurantInformationForTransfer },
+			headers: {
+				token: userStatus.accessToken,
+			},
+		}).catch((err) => console.error(err));
 	};
 
 	const showMenus = () => {
@@ -159,7 +210,7 @@ function RestaurantInformationInputPage() {
 								<TextField
 									label="여는 시간"
 									type="time"
-									value={restaurantInformation.openTime[index]}
+									value={restaurantInformation.openingHours[index].openTime}
 									InputLabelProps={{
 										shrink: true,
 									}}
@@ -167,27 +218,18 @@ function RestaurantInformationInputPage() {
 										step: 300, // 5 min
 									}}
 									onChange={(e) => {
-										const newOpenTime = restaurantInformation.openTime;
-										newOpenTime[index] = e.target.value;
+										const newOpeningHours = restaurantInformation.openingHours;
+										newOpeningHours[index].openTime = e.target.value;
 										setRestaurantInformation({
 											...restaurantInformation,
-											openTime: newOpenTime,
+											openingHours: newOpeningHours,
 										});
 									}}
 								/>
-							</div>
-						);
-					})}
-				</div>
-				<div>
-					{dayOfWeek.map((e, index) => {
-						return (
-							<div key={index}>
-								{e}
 								<TextField
 									label="닫는 시간"
 									type="time"
-									value={restaurantInformation.closeTime[index]}
+									value={restaurantInformation.openingHours[index].closeTime}
 									InputLabelProps={{
 										shrink: true,
 									}}
@@ -195,11 +237,11 @@ function RestaurantInformationInputPage() {
 										step: 300, // 5 min
 									}}
 									onChange={(e) => {
-										const newCloseTime = restaurantInformation.closeTime;
-										newCloseTime[index] = e.target.value;
+										const newOpeningHours = restaurantInformation.openingHours;
+										newOpeningHours[index].closeTime = e.target.value;
 										setRestaurantInformation({
 											...restaurantInformation,
-											closeTime: newCloseTime,
+											openingHours: newOpeningHours,
 										});
 									}}
 								/>
@@ -207,14 +249,17 @@ function RestaurantInformationInputPage() {
 						);
 					})}
 				</div>
-				<AddressSearch />
+				<AddressSearch
+					restaurantInformation={restaurantInformation}
+					setRestaurantInformation={setRestaurantInformation}
+				/>
 				<div>
 					<input type="file" onChange={(e) => setSelectedFile(e.target.files && e.target.files[0])} accept=".xlsx" />
 				</div>
 				<div>
 					<Button onClick={showPreviewButtonHandler}>Convert Excel to Json</Button>
 				</div>
-				<Button onClick={submitButtonHandler}>Submit</Button>
+				<Button onClick={submitButtonHandler}>승인신청</Button>
 			</div>
 			<ul>{showMenus()}</ul>
 		</div>

@@ -23,6 +23,7 @@ function LoginPage() {
 				password: loginInput.password,
 				role: 'restaurantOwner',
 			},
+			withCredentials: true,
 		})
 			.then((res) => {
 				res.data.isInitialPassword === undefined
