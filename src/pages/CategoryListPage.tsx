@@ -1,8 +1,10 @@
 import { Box, Grid } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { SERVER_URL } from '../config';
 import UserContext from '../contexts/UserContext';
+import { useHistory } from 'react-router-dom';
+import { CategoryResponseType } from '../types/ResponseTypes';
 
 const defaultProps = {
 	bgcolor: 'background.paper',
@@ -14,13 +16,14 @@ const defaultProps = {
 
 function CategoryListPage() {
 	const url = `${SERVER_URL}/category`;
+	const history = useHistory();
 	const { userStatus } = useContext(UserContext);
-	const [categoryList, setCategoryList] = useState<string[]>([]);
+	const [categoryList, setCategoryList] = useState<CategoryResponseType[]>([]);
 	useEffect(() => {
-		axios({ method: 'get', url }).then((res) => {
-			const resultArray: string[] = [];
+		axios({ method: 'get', url }).then((res: AxiosResponse<CategoryResponseType[]>) => {
+			const resultArray: CategoryResponseType[] = [];
 			res.data.forEach((e: any) => {
-				resultArray.push(e.name);
+				resultArray.push(e);
 			});
 			setCategoryList(resultArray);
 		});
@@ -32,8 +35,14 @@ function CategoryListPage() {
 			{categoryList.map((e, index) => {
 				return (
 					<Grid key={index} item xs={3}>
-						<Box borderRadius={16} {...defaultProps}>
-							{e}
+						<Box
+							borderRadius={16}
+							{...defaultProps}
+							onClick={() => {
+								history.push(`/RestaurantList/${e._id}`);
+							}}
+						>
+							{e.name}
 						</Box>
 					</Grid>
 				);

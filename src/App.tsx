@@ -5,6 +5,8 @@ import { BrowserRouter as Router, useHistory, Route, Redirect, Switch } from 're
 import CategoryListPage from './pages/CategoryListPage';
 import RestaurantInformationInputPage from './pages/RestaurantInformationInputPage';
 import RestaurantManagementPage from './pages/RestaruantManagementPage';
+import RestaurantListPage from './pages/RestaurantListPage';
+import RestaurantPage from './pages/RestaurantPage';
 import AdminManagementPage from './pages/AdminManagementPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import LoginPage from './pages/LoginPage';
@@ -40,6 +42,8 @@ function App() {
 					<Route exact path="/AdminManagement" component={AdminManagementPage} />
 					<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
 					<Route exact path="/RestaurantManagement" component={RestaurantManagementPage} />
+					<Route exact path="/RestaurantList/:categoryId" component={RestaurantListPage} />
+					<Route exact path="/Restaurant/:restaurantId" component={RestaurantPage} />
 					<Route exact path="/SignUp" component={SignUpPage} />
 					<Route path="/" render={() => <div>404</div>} />
 				</Switch>
@@ -54,9 +58,7 @@ function ProtectedRoute(props: { path: string; exact: boolean; userStatus: UserS
 		<Route
 			exact
 			path={props.path}
-			render={() =>
-				props.userStatus.accessToken.length > 0 ? props.children : <Redirect exact to={{ pathname: '/' }} />
-			}
+			render={() => (props.userStatus.accessToken.length > 0 ? props.children : <Redirect to={{ pathname: '/' }} />)}
 		/>
 	);
 }

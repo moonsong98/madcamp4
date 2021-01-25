@@ -10,7 +10,7 @@ function AdminManagementPage() {
 		{ registerNumber: '', password: '' }
 	);
 
-	const { userStatus, setUserStatus } = useContext(UserContext);
+	const { userStatus } = useContext(UserContext);
 
 	const createRestaurantOwnerAccount = (event: React.FormEvent) => {
 		event?.preventDefault();

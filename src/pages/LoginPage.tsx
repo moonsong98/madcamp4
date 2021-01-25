@@ -8,7 +8,7 @@ import { SERVER_URL } from '../config';
 
 function LoginPage() {
 	const history = useHistory();
-	const { userStatus, setUserStatus } = useContext(UserContext);
+	const { setUserStatus } = useContext(UserContext);
 	const [loginInput, setLoginInput] = useState<LoginInput>({
 		username: '',
 		password: '',
@@ -26,6 +26,7 @@ function LoginPage() {
 			withCredentials: true,
 		})
 			.then((res) => {
+				console.log(res.data);
 				res.data.isInitialPassword === undefined
 					? setUserStatus({ accessToken: res.data.token, role: res.data.role })
 					: setUserStatus({
