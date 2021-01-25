@@ -29,7 +29,6 @@ function CategoryListPage() {
 		});
 	}, [url]);
 
-	console.log(userStatus);
 	return (
 		<Box display="flex" justifyContent="center">
 			{categoryList.map((e, index) => {

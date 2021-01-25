@@ -15,7 +15,6 @@ function AdminManagementPage() {
 	const createRestaurantOwnerAccount = (event: React.FormEvent) => {
 		event?.preventDefault();
 		const password = Math.random().toString(36).slice(-8);
-		console.log(`username: ${restaurantOwnerRegisterInformation.registerNumber} password: ${password}`);
 		axios({
 			method: 'post',
 			url: `${SERVER_URL}/auth/register`,
@@ -26,7 +25,6 @@ function AdminManagementPage() {
 			},
 		}).then((res) => console.log(res.data));
 	};
-	console.log(userStatus.role);
 	return (
 		<form onSubmit={createRestaurantOwnerAccount}>
 			<div>

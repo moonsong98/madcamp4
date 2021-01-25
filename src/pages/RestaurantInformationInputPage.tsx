@@ -133,7 +133,6 @@ function RestaurantInformationInputPage() {
 					<div>{`메뉴: ${e.name}`}</div>
 					<div>{`설명: ${e.description}`}</div>
 					{e.sizes.map((s, index) => {
-						console.log(s);
 						return (
 							<div key={index}>{s.size.length > 0 ? `사이즈: ${s.size} 가격: ${s.price}` : `가격: ${s.price}`}</div>
 						);

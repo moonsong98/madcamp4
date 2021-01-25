@@ -53,7 +53,6 @@ function App() {
 }
 
 function ProtectedRoute(props: { path: string; exact: boolean; userStatus: UserStatus; children: React.ReactChild }) {
-	console.log('SSS');
 	return (
 		<Route
 			exact

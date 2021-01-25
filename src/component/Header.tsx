@@ -31,48 +31,52 @@ function Header() {
 		setUserStatus({ accessToken: '', role: '' });
 	};
 
+	console.log(userStatus.accessToken);
+	const renderMenu =
+		userStatus.accessToken.length > 0 ? (
+			<div>
+				<IconButton
+					aria-label="account of current user"
+					aria-controls="menu-appbar"
+					aria-haspopup="true"
+					onClick={handleMenu}
+					color="inherit"
+				>
+					<AccountCircle />
+				</IconButton>
+				<Menu
+					id="menu-appbar"
+					anchorEl={anchorEl}
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					keepMounted
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					open={open}
+					onClose={handleClose}
+				>
+					<Link to="/">
+						<MenuItem onClick={handleLogout}>Logout</MenuItem>
+					</Link>
+				</Menu>
+			</div>
+		) : (
+			<Link to="/login">
+				<Button color="inherit">Login</Button>
+			</Link>
+		);
+
 	return (
 		<AppBar className={classes.root} position="static">
 			<Toolbar>
 				<Link to="/">
 					<p>배달음식</p>
 				</Link>
-				{userStatus.accessToken.length > 0 ? (
-					<div>
-						<IconButton
-							aria-label="account of current user"
-							aria-controls="menu-appbar"
-							aria-haspopup="true"
-							onClick={handleMenu}
-							color="inherit"
-						>
-							<AccountCircle />
-						</IconButton>
-						<Menu
-							id="menu-appbar"
-							anchorEl={anchorEl}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							open={open}
-							onClose={handleClose}
-						>
-							<Link to="/">
-								<MenuItem onClick={handleLogout}>Logout</MenuItem>
-							</Link>
-						</Menu>
-					</div>
-				) : (
-					<Link to="/login">
-						<Button color="inherit">Login</Button>
-					</Link>
-				)}
+				{renderMenu}
 			</Toolbar>
 		</AppBar>
 	);

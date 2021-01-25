@@ -21,12 +21,10 @@ function RestaurantOwnerChangePasswordPage() {
 			},
 		})
 			.then((res) => {
-				console.log(res);
 				history.push('/restaurantinformationinput');
 			})
 			.catch((err) => {
 				console.log(err.request.response);
-				console.log(`accessToken: ${userStatus.accessToken}`);
 			});
 	};
 	return (

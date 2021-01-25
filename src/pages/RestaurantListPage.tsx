@@ -33,8 +33,6 @@ function RestaurantListPage(props: Props) {
 			});
 			setRestaurantList(resultRestaurantList);
 		});
-		console.log(props.match.params.categoryId);
-		console.log(url);
 	}, [url]);
 	return (
 		<div>
