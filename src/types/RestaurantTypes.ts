@@ -2,6 +2,7 @@ export interface Menu {
 	name: string;
 	description: string;
 	sizes: [MenuSize];
+	image?: string;
 }
 
 export interface MenuSize {
@@ -28,4 +29,10 @@ export interface Restaurant {
 	openingHours: OpeningHour[];
 	location: Location;
 	comment?: [];
+}
+
+export interface MenuModification {
+	newMenus: Menu[];
+	removedMenus: Menu[];
+	modifiedMenus: Menu[];
 }

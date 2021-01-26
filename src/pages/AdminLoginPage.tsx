@@ -20,8 +20,8 @@ function AdminLoginpage() {
 				password: loginInput.password,
 				role: 'admin',
 			},
-		}).then((res: AxiosResponse<LoginResponseType>) => {
-			setUserStatus({ accessToken: res.data.token, role: res.data.role });
+		}).then((res) => {
+			setUserStatus({ ...res.data });
 		});
 	};
 

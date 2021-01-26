@@ -5,6 +5,7 @@ import { SERVER_URL } from '../config';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { RestaurantResponseType } from '../types/ResponseTypes';
 import { Button } from '@material-ui/core';
+import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
 
 interface MatchParams {
 	categoryId: string;
@@ -18,14 +19,33 @@ const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		root: {
 			display: 'flex',
+			alignItems: 'center',
+			flexWrap: 'wrap',
+			marginLeft: '10%',
+			marginRight: '10%',
+			flex: 1,
+			flexDirection: 'row',
+		},
+		restaurant: {
+			display: 'flex',
 			flexDirection: 'column',
 			alignItems: 'center',
+		},
+		image: {
+			height: '5rem',
+			width: 'auto',
+		},
+		contianter: {
+			width: '15rem',
+			height: '18rem',
 		},
 	})
 );
 
 function RestaurantListPage(props: Props) {
 	const classes = useStyles();
+	const curr = new Date();
+	const today = curr.getDay();
 	const url = `${SERVER_URL}/restaurant?category=${encodeURI(props.categoryId)}`;
 	const [restaurantList, setRestaurantList] = useState<RestaurantResponseType[]>([]);
 	const history = useHistory();
@@ -52,21 +72,23 @@ function RestaurantListPage(props: Props) {
 				return (
 					<div key={index}>
 						<Button
+							className={classes.contianter}
+							variant="outlined"
 							onClick={() => {
 								history.push(`/restaurant/${e._id}`);
 							}}
 						>
-							<p>{e._id}</p>
-							<p>{e.name}</p>
-							<p>{e.description}</p>
-							{e.openingHours.map((el) => {
-								return (
+							<div className={classes.restaurant}>
+								<img className={classes.image} src={restaurantDefaultImage} alt="Restaurant" />
+								<div>{e.name}</div>
+								<div>{e.description}</div>
+								{e.openingHours[today] && (
 									<div>
-										<p>{el.openTime}</p>
-										<p>{el.closeTime}</p>
+										<p>{e.openingHours[today].openTime}</p>
+										<p>{e.openingHours[today].closeTime}</p>
 									</div>
-								);
-							})}
+								)}
+							</div>
 						</Button>
 					</div>
 				);

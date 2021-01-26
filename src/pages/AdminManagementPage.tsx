@@ -9,21 +9,23 @@ function AdminManagementPage() {
 	const [restaurantOwnerRegisterInformation, setRestaurantOnwerRegisterInformation] = useState<RestaurantOwnerRegister>(
 		{ registerNumber: '', password: '' }
 	);
+	const [password, setPassword] = useState('');
 
 	const { userStatus } = useContext(UserContext);
 
 	const createRestaurantOwnerAccount = (event: React.FormEvent) => {
 		event?.preventDefault();
-		const password = Math.random().toString(36).slice(-8);
+		const createdPassword = Math.random().toString(36).slice(-8);
+		setPassword(createdPassword);
 		axios({
 			method: 'post',
 			url: `${SERVER_URL}/auth/register`,
 			data: {
 				username: restaurantOwnerRegisterInformation.registerNumber,
-				password,
+				password: createdPassword,
 				role: 'restaurantOwner',
 			},
-		}).then((res) => console.log(res.data));
+		}).then((res) => console.log(createdPassword));
 	};
 	return (
 		<form onSubmit={createRestaurantOwnerAccount}>
@@ -40,6 +42,7 @@ function AdminManagementPage() {
 					}}
 				/>
 			</div>
+			{password.length > 0 && password}
 			<Button type="submit">Create New Restaurant Owner's Account</Button>
 		</form>
 	);

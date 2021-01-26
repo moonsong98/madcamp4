@@ -105,21 +105,21 @@ function RestaurantInformationInputPage() {
 	};
 
 	const submitButtonHandler = () => {
-		const transformedOpeningHours = restaurantInformation.openingHours.map((e, index) => {
-			const openingTimes = e.openTime.split(':');
-			const closingTimes = e.closeTime.split(':');
-			const newOpenTime = `${openingTimes[0]}.${openingTimes[1]}.${index}`;
-			const newCloseTime = `${closingTimes[0]}.${closingTimes[1]}.${index}`;
-			return {
-				openTime: newOpenTime,
-				closeTime: newCloseTime,
-			};
-		});
-		const restaurantInformationForTransfer = { ...restaurantInformation, openingHours: transformedOpeningHours };
+		// const transformedOpeningHours = restaurantInformation.openingHours.map((e, index) => {
+		// 	const openingTimes = e.openTime.split(':');
+		// 	const closingTimes = e.closeTime.split(':');
+		// 	const newOpenTime = `${openingTimes[0]}.${openingTimes[1]}.${index}`;
+		// 	const newCloseTime = `${closingTimes[0]}.${closingTimes[1]}.${index}`;
+		// 	return {
+		// 		openTime: newOpenTime,
+		// 		closeTime: newCloseTime,
+		// 	};
+		// });
+		// const restaurantInformationForTransfer = { ...restaurantInformation, openingHours: transformedOpeningHours };
 		axios({
 			method: 'post',
 			url: `${SERVER_URL}/restaurant/`,
-			data: { ...restaurantInformationForTransfer },
+			data: restaurantInformation,
 			headers: {
 				token: userStatus.accessToken,
 			},

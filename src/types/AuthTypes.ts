@@ -10,6 +10,7 @@ export interface UserStatus {
 	accessToken: string;
 	role: string;
 	isInitialPassword?: boolean;
+	restaurantId?: string;
 }
 export interface SignUpStatus {
 	username: string;

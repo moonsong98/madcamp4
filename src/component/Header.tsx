@@ -70,10 +70,11 @@ function Header() {
 		setUserStatus({ accessToken: '', role: '' });
 	};
 	const handleRestaurantManagementMenu = () => {
-		userStatus.isInitialPassword
-			? history.push('/RestaurantOwnerChangePassword')
-			: history.push('/RestaurantInformationInput');
+		userStatus.restaurantId ? history.push('/RestaurantManagement') : history.push('/RestaurantInformationInput');
 		handleClose();
+	};
+	const handlePasswordChangeMenu = () => {
+		history.push('/RestaurantOwnerChangePassword');
 	};
 
 	const renderSearchBar = (
@@ -119,9 +120,12 @@ function Header() {
 					open={open}
 					onClose={handleClose}
 				>
-					{userStatus.role === 'restaurantOwner' && (
-						<MenuItem onClick={handleRestaurantManagementMenu}>가게 정보 수정</MenuItem>
-					)}
+					{userStatus.role === 'restaurantOwner' &&
+						(userStatus.isInitialPassword ? (
+							<MenuItem onClick={handlePasswordChangeMenu}>비밀번호 변경</MenuItem>
+						) : (
+							<MenuItem onClick={handleRestaurantManagementMenu}>가게 정보 수정</MenuItem>
+						))}
 					<MenuItem onClick={handleLogout}>로그아웃</MenuItem>
 				</Menu>
 			</div>

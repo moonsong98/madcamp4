@@ -68,7 +68,9 @@ function AddressSearch(props: Props) {
 				<Modal open={open} onClose={() => setOpen(false)}>
 					<DaumPostCode onComplete={onCompleteHandler} autoClose width={width} height={height} style={modalStyle} />
 				</Modal>
-				<div className="address">{fullAddress}</div>
+				<div className="address">
+					{fullAddress.length > 0 ? fullAddress : props.restaurantInformation.location.fullAddress}
+				</div>
 				<div className="addressBox">
 					<input
 						type="text"

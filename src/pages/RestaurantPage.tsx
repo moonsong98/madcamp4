@@ -63,7 +63,6 @@ function RestaurantPage(props: Props) {
 	}, [url]);
 	return (
 		<div>
-			<p>{restaurantInformation.name}</p>
 			<p>{restaurantInformation.description}</p>
 			<p>{restaurantInformation.category}</p>
 			<p>{restaurantInformation.telephone}</p>
