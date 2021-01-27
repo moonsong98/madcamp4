@@ -1,7 +1,7 @@
 export interface Menu {
 	name: string;
 	description: string;
-	sizes: [MenuSize];
+	sizes: MenuSize[];
 	image?: string;
 }
 
