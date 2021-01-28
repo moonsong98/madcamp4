@@ -6,6 +6,7 @@ import { AccountCircle } from '@material-ui/icons';
 import SearchIcon from '@material-ui/icons/Search';
 import UserContext from '../contexts/UserContext';
 import SearchBarContext from '../contexts/SearchBarContext';
+import useAuthStatus from '../utils/Cookie';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function Header() {
 	const classes = useStyles();
 	const history = useHistory();
+	const [_, setAuthStatus, removeAuthStatus] = useAuthStatus();
 	const { userStatus, setUserStatus } = useContext(UserContext);
 	const { searchText, setSearchText } = useContext(SearchBarContext);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -71,6 +73,7 @@ function Header() {
 	const handleLogout = () => {
 		handleClose();
 		setUserStatus({ accessToken: '', role: '' });
+		removeAuthStatus();
 	};
 	const handleRestaurantManagementMenu = () => {
 		userStatus.restaurantId ? history.push('/RestaurantManagement') : history.push('/RestaurantInformationInput');

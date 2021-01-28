@@ -5,10 +5,12 @@ import { LoginInput } from '../types/AuthTypes';
 import { LoginResponseType } from '../types/ResponseTypes';
 import UserContext from '../contexts/UserContext';
 import { SERVER_URL } from '../config';
+import useAuthStatus from '../utils/Cookie';
 
 function AdminLoginpage() {
 	const [loginInput, setLoginInput] = useState<LoginInput>({ username: '', password: '' });
 	const { setUserStatus } = useContext(UserContext);
+	const [_, setAuthStatus, removeAuthStatus] = useAuthStatus();
 
 	const submitHandler = (event: React.FormEvent) => {
 		event?.preventDefault();
@@ -21,6 +23,7 @@ function AdminLoginpage() {
 			},
 		}).then((res) => {
 			if (res.data.role === 'admin') {
+				setAuthStatus(res.data);
 				setUserStatus({ ...res.data });
 			}
 		});

@@ -5,6 +5,7 @@ import axios from 'axios';
 import UserContext from '../contexts/UserContext';
 import { Link, useHistory } from 'react-router-dom';
 import { SERVER_URL } from '../config';
+import useAuthStatus from '../utils/Cookie';
 
 function LoginPage() {
 	const history = useHistory();
@@ -14,6 +15,7 @@ function LoginPage() {
 		username: '',
 		password: '',
 	});
+	const [_, setAuthStatus, removeAuthStatus] = useAuthStatus();
 	const submitHandler = (event: React.FormEvent) => {
 		event.preventDefault();
 		axios({
@@ -28,6 +30,7 @@ function LoginPage() {
 			.then((res) => {
 				console.log(res);
 				if (res.data.role === 'user' || res.data.role === 'restaurantOwner') {
+					setAuthStatus(res.data);
 					setUserStatus({ ...res.data });
 					history.push('/');
 				}

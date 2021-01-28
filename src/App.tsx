@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, useHistory, Route, Redirect, Switch, RouteProps } from 'react-router-dom';
@@ -17,10 +17,15 @@ import UserContext from './contexts/UserContext';
 import SearchBarContext from './contexts/SearchBarContext';
 import { UserStatus } from './types/AuthTypes';
 import RestaurantOwnerChangePasswordPage from './pages/RestaurantOwnerChangePasswordPage';
+import useAuthStatus from './utils/Cookie';
 
 function App() {
 	const [userStatus, setUserStatus] = useState<UserStatus>({ accessToken: '', role: '' });
 	const [searchText, setSearchText] = useState('');
+	const [_, setAuthStatus, removeAuthStatus] = useAuthStatus();
+	useEffect(() => {
+		_ ? setUserStatus(_) : setUserStatus({ accessToken: '', role: '' });
+	}, [userStatus.accessToken]);
 	return (
 		<UserContext.Provider value={{ userStatus, setUserStatus }}>
 			<SearchBarContext.Provider value={{ searchText, setSearchText }}>
