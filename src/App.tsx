@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, useHistory, Route, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, useHistory, Route, Redirect, Switch, RouteProps } from 'react-router-dom';
 import CategoryListPage from './pages/CategoryListPage';
 import RestaurantInformationInputPage from './pages/RestaurantInformationInputPage';
 import RestaurantManagementPage from './pages/RestaruantManagementPage';
@@ -28,24 +28,79 @@ function App() {
 					<Header />
 					<Switch>
 						<Route exact path="/" component={CategoryListPage} />
-						<Route exact path="/login" component={LoginPage} />
-						<ProtectedRoute exact path="/RestaurantInformationInput" userStatus={userStatus}>
-							<RestaurantInformationInputPage />
-						</ProtectedRoute>
+						<Route
+							exact
+							path="/login"
+							render={(props: RouteProps) =>
+								userStatus.accessToken.length === 0 ? (
+									<LoginPage />
+								) : (
+									<Redirect to={{ pathname: '/', state: { from: props.location } }} />
+								)
+							}
+						/>
 						<Route
 							exact
 							path="/AdminLogin"
 							render={(props) =>
 								userStatus.role === 'admin' ? (
 									<Redirect to={{ pathname: '/AdminManagement', state: { from: props.location } }} />
-								) : (
+								) : userStatus.accessToken.length === 0 ? (
 									<AdminLoginPage />
+								) : (
+									<Redirect to={{ pathname: '/', state: { from: props.location } }} />
 								)
 							}
 						/>
-						<Route path="/AdminManagement" component={AdminManagementRouter} />
-						<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
-						<Route exact path="/RestaurantManagement" component={RestaurantManagementPage} />
+						<AdminRoute exact path="/AdminManagement" userStatus={userStatus}>
+							<AdminManagementRouter />
+						</AdminRoute>
+						<RestaurantOwnerRoute exact path="/RestaurantOwnerChangePassword" userStatus={userStatus}>
+							<Route
+								exact
+								path="/RestaurantOwnerChangePassword"
+								render={(props) =>
+									userStatus.isInitialPassword ? (
+										<RestaurantOwnerChangePasswordPage />
+									) : !userStatus.restaurantId ? (
+										<Redirect to={{ pathname: '/RestaurantInformationInput', state: { from: props.location } }} />
+									) : (
+										<Redirect to={{ pathname: '/RestaurantManagement', state: { from: props.location } }} />
+									)
+								}
+							/>
+							{/* <RestaurantOwnerChangePasswordPage /> */}
+						</RestaurantOwnerRoute>
+						<RestaurantOwnerRoute exact path="/RestaurantInformationInput" userStatus={userStatus}>
+							<Route
+								exact
+								path="/RestaurantInformationInput"
+								render={(props) =>
+									userStatus.isInitialPassword ? (
+										<Redirect to={{ pathname: '/RestaurantOwnerChangePassword', state: { from: props.location } }} />
+									) : !userStatus.restaurantId ? (
+										<RestaurantInformationInputPage />
+									) : (
+										<Redirect to={{ pathname: '/RestaurantManagement', state: { from: props.location } }} />
+									)
+								}
+							/>
+						</RestaurantOwnerRoute>
+						<RestaurantOwnerRoute exact path="/RestaurantManagement" userStatus={userStatus}>
+							<Route
+								exact
+								path="/RestaurantManagement"
+								render={(props) =>
+									userStatus.isInitialPassword ? (
+										<Redirect to={{ pathname: '/RestaurantOwnerChangePassword', state: { from: props.location } }} />
+									) : !userStatus.restaurantId ? (
+										<Redirect to={{ pathname: '/RestaurantInformationInput', state: { from: props.location } }} />
+									) : (
+										<RestaurantManagementPage />
+									)
+								}
+							/>
+						</RestaurantOwnerRoute>
 						<Route exact path="/RestaurantList/:categoryId" component={RestaurantListPage} />
 						<Route exact path="/Restaurant/:restaurantId" component={RestaurantPage} />
 						<Route exact path="/SignUp" component={SignUpPage} />
@@ -57,12 +112,29 @@ function App() {
 	);
 }
 
-function ProtectedRoute(props: { path: string; exact: boolean; userStatus: UserStatus; children: React.ReactChild }) {
+function AdminRoute(props: { path: string; exact: boolean; userStatus: UserStatus; children: React.ReactChild }) {
 	return (
 		<Route
 			exact
 			path={props.path}
-			render={() => (props.userStatus.accessToken.length > 0 ? props.children : <Redirect to={{ pathname: '/' }} />)}
+			render={() => (props.userStatus.role === 'admin' ? props.children : <Redirect to={{ pathname: '/' }} />)}
+		/>
+	);
+}
+
+function RestaurantOwnerRoute(props: {
+	path: string;
+	exact: boolean;
+	userStatus: UserStatus;
+	children: React.ReactChild;
+}) {
+	return (
+		<Route
+			exact
+			path={props.path}
+			render={() =>
+				props.userStatus.role === 'restaurantOwner' ? props.children : <Redirect to={{ pathname: '/' }} />
+			}
 		/>
 	);
 }
