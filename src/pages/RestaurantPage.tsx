@@ -113,7 +113,7 @@ function RestaurantPage(props: Props) {
 					primary={`가게 주소: ${restaurantInformation.location.fullAddress} ${restaurantInformation.location.extraAddress}`}
 				/>
 				<Divider />
-				{/* <MapContainer fullAddress={restaurantInformation.location.fullAddress} name={restaurantInformation.name} /> */}
+				<MapContainer fullAddress={restaurantInformation.location.fullAddress} name={restaurantInformation.name} />
 				<Paper>
 					<p>댓글</p>
 					<List>
