@@ -6,6 +6,7 @@ import { AccountCircle } from '@material-ui/icons';
 import SearchIcon from '@material-ui/icons/Search';
 import UserContext from '../contexts/UserContext';
 import SearchBarContext from '../contexts/SearchBarContext';
+import logo from '../images/logo.png';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -14,7 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
 			justifyContent: 'space-between',
 		},
 		header: {
-			marginLeft: '1%',
+			// marginLeft: '1%',
+			cursor: 'pointer',
+			maxHeight: '5rem',
 		},
 		menu: {
 			float: 'right',
@@ -151,14 +154,14 @@ function Header() {
 	return (
 		<AppBar position="static">
 			<Toolbar className={classes.root}>
-				<p
+				<img
 					className={classes.header}
+					src={logo}
+					alt="logo"
 					onClick={() => {
 						history.push('/');
 					}}
-				>
-					배달음식
-				</p>
+				/>
 				{renderSearchBar}
 				<div className={classes.menu}>{renderMenu}</div>
 			</Toolbar>
