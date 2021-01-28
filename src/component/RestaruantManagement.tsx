@@ -96,6 +96,15 @@ function RestaurantManagement() {
 
 	return (
 		<div className={classes.rootDiv}>
+			{restaurant.confirmed ? (
+				<Button variant="outlined" color="primary">
+					승인됨
+				</Button>
+			) : (
+				<Button variant="outlined" color="secondary">
+					승인 대기중
+				</Button>
+			)}
 			<div>
 				<Button component="label">
 					<div>
