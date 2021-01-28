@@ -11,10 +11,12 @@ import {
 import React, { useContext, useState } from 'react';
 import ConvertXlsxToJson from '../utils/ConvertXlsxToJson';
 import axios from 'axios';
-import { Restaurant } from '../types/RestaurantTypes';
+import { OpeningHour, Restaurant } from '../types/RestaurantTypes';
 import { SERVER_URL } from '../config';
 import AddressSearch from '../component/AddressSearchComponent';
 import UserContext from '../contexts/UserContext';
+import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -31,50 +33,25 @@ const greetingMessage = (collegeName: string) =>
 	`저희 ${collegeName}과 계약하신 것을 환영합니다, 아래 내용을 기입하신 후 승인 신청 버튼을 눌러주세요.\n검토 후 승인 완료 시 사이트에 가게 내용이 표시됩니다.`;
 
 function RestaurantInformationInputPage() {
+	const history = useHistory();
 	const classes = useStyles();
 	const { userStatus, setUserStatus } = useContext(UserContext);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	const [restaurantInformation, setRestaurantInformation] = useState<Restaurant>({
+	const [restaurant, setRestaurant] = useState<Restaurant>({
 		name: '',
 		category: '',
 		menus: [],
 		telephone: '',
 		description: '',
-		openingHours: [
-			{
-				openTime: '',
-				closeTime: '',
-			},
-			{
-				openTime: '',
-				closeTime: '',
-			},
-			{
-				openTime: '',
-				closeTime: '',
-			},
-			{
-				openTime: '',
-				closeTime: '',
-			},
-			{
-				openTime: '',
-				closeTime: '',
-			},
-			{
-				openTime: '',
-				closeTime: '',
-			},
-			{
-				openTime: '',
-				closeTime: '',
-			},
-		],
+		openingHours: [...Array<OpeningHour>(7)].map(() => {
+			return { openTime: '', closeTime: '' } as OpeningHour;
+		}),
 		location: {
 			fullAddress: '',
 			extraAddress: '',
 		},
 	});
+	const [image, setImage] = useState<File | null>(null);
 
 	const categoryList = [
 		'중국집',
@@ -96,7 +73,7 @@ function RestaurantInformationInputPage() {
 		if (selectedFile) {
 			try {
 				ConvertXlsxToJson(selectedFile).then((value) => {
-					setRestaurantInformation({ ...restaurantInformation, menus: Object.values(value) });
+					setRestaurant({ ...restaurant, menus: Object.values(value) });
 				});
 			} catch (err) {
 				console.error(err);
@@ -104,30 +81,31 @@ function RestaurantInformationInputPage() {
 		}
 	};
 
-	const submitButtonHandler = () => {
-		// const transformedOpeningHours = restaurantInformation.openingHours.map((e, index) => {
-		// 	const openingTimes = e.openTime.split(':');
-		// 	const closingTimes = e.closeTime.split(':');
-		// 	const newOpenTime = `${openingTimes[0]}.${openingTimes[1]}.${index}`;
-		// 	const newCloseTime = `${closingTimes[0]}.${closingTimes[1]}.${index}`;
-		// 	return {
-		// 		openTime: newOpenTime,
-		// 		closeTime: newCloseTime,
-		// 	};
-		// });
-		// const restaurantInformationForTransfer = { ...restaurantInformation, openingHours: transformedOpeningHours };
-		axios({
-			method: 'post',
-			url: `${SERVER_URL}/restaurant/`,
-			data: restaurantInformation,
-			headers: {
-				token: userStatus.accessToken,
-			},
-		}).catch((err) => console.error(err));
+	const submitButtonHandler = async () => {
+		if (!image) return;
+		const form = new FormData();
+		form.append('image', image);
+		form.append('restaurant', JSON.stringify(restaurant));
+
+		try {
+			const response = await axios.post(`${SERVER_URL}/restaurant/`, form, {
+				headers: { token: userStatus.accessToken },
+			});
+
+			if (response.status === 200) {
+				setUserStatus({
+					...userStatus,
+					restaurantId: response.data._id,
+				});
+				history.push('/RestaurantManagement');
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const showMenus = () => {
-		return restaurantInformation?.menus.map((e, index) => {
+		return restaurant?.menus.map((e, index) => {
 			return (
 				<li key={index}>
 					<div>{`메뉴: ${e.name}`}</div>
@@ -145,14 +123,25 @@ function RestaurantInformationInputPage() {
 	return (
 		<div className={classes.rootDiv}>
 			<div>
-				<div>{greetingMessage('포스텍')}</div>
+				<div>{greetingMessage('고려대')}</div>
+				<Button component="label">
+					<div>
+						<img
+							src={image ? URL.createObjectURL(image) : restaurantDefaultImage}
+							alt="가게 대표 이미지"
+							style={{ maxWidth: '25vw', maxHeight: '50vh' }}
+						/>
+					</div>
+					<input type="file" onChange={(e) => setImage(e.target.files && e.target.files[0])} hidden />
+				</Button>
+
 				<div>
 					<TextField
 						required
 						label="가게 이름"
-						value={restaurantInformation.name}
+						value={restaurant.name}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							setRestaurantInformation({ ...restaurantInformation, name: event.target.value });
+							setRestaurant({ ...restaurant, name: event.target.value });
 						}}
 						placeholder="가게 이름을 입력해주세요"
 					/>
@@ -164,9 +153,9 @@ function RestaurantInformationInputPage() {
 						</InputLabel>
 						<Select
 							labelId="category"
-							value={restaurantInformation.category}
+							value={restaurant.category}
 							onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-								setRestaurantInformation({ ...restaurantInformation, category: event.target.value as string });
+								setRestaurant({ ...restaurant, category: event.target.value as string });
 							}}
 						>
 							{categoryList.map((e, index) => {
@@ -183,9 +172,9 @@ function RestaurantInformationInputPage() {
 					<TextField
 						label="가게 설명"
 						placeholder="가게 설명 입력해주세요"
-						value={restaurantInformation.description}
+						value={restaurant.description}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							setRestaurantInformation({ ...restaurantInformation, description: event.target.value });
+							setRestaurant({ ...restaurant, description: event.target.value });
 						}}
 						multiline={true}
 					/>
@@ -195,9 +184,9 @@ function RestaurantInformationInputPage() {
 						label="전화번호"
 						type="tel"
 						placeholder="전화번호를 입력해주세요"
-						value={restaurantInformation.telephone}
+						value={restaurant.telephone}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							setRestaurantInformation({ ...restaurantInformation, telephone: event.target.value });
+							setRestaurant({ ...restaurant, telephone: event.target.value });
 						}}
 					/>
 				</div>
@@ -209,7 +198,7 @@ function RestaurantInformationInputPage() {
 								<TextField
 									label="여는 시간"
 									type="time"
-									value={restaurantInformation.openingHours[index].openTime}
+									value={restaurant.openingHours[index].openTime}
 									InputLabelProps={{
 										shrink: true,
 									}}
@@ -217,10 +206,10 @@ function RestaurantInformationInputPage() {
 										step: 300, // 5 min
 									}}
 									onChange={(e) => {
-										const newOpeningHours = restaurantInformation.openingHours;
+										const newOpeningHours = restaurant.openingHours;
 										newOpeningHours[index].openTime = e.target.value;
-										setRestaurantInformation({
-											...restaurantInformation,
+										setRestaurant({
+											...restaurant,
 											openingHours: newOpeningHours,
 										});
 									}}
@@ -228,7 +217,7 @@ function RestaurantInformationInputPage() {
 								<TextField
 									label="닫는 시간"
 									type="time"
-									value={restaurantInformation.openingHours[index].closeTime}
+									value={restaurant.openingHours[index].closeTime}
 									InputLabelProps={{
 										shrink: true,
 									}}
@@ -236,10 +225,10 @@ function RestaurantInformationInputPage() {
 										step: 300, // 5 min
 									}}
 									onChange={(e) => {
-										const newOpeningHours = restaurantInformation.openingHours;
+										const newOpeningHours = restaurant.openingHours;
 										newOpeningHours[index].closeTime = e.target.value;
-										setRestaurantInformation({
-											...restaurantInformation,
+										setRestaurant({
+											...restaurant,
 											openingHours: newOpeningHours,
 										});
 									}}
@@ -248,10 +237,7 @@ function RestaurantInformationInputPage() {
 						);
 					})}
 				</div>
-				<AddressSearch
-					restaurantInformation={restaurantInformation}
-					setRestaurantInformation={setRestaurantInformation}
-				/>
+				<AddressSearch restaurantInformation={restaurant} setRestaurantInformation={setRestaurant} />
 				<div>
 					<input type="file" onChange={(e) => setSelectedFile(e.target.files && e.target.files[0])} accept=".xlsx" />
 				</div>

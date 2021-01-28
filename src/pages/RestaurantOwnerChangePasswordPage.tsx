@@ -21,7 +21,13 @@ function RestaurantOwnerChangePasswordPage() {
 			},
 		})
 			.then((res) => {
-				history.push('/restaurantinformationinput');
+				if (res.status === 200) {
+					setUserStatus({
+						...userStatus,
+						isInitialPassword: false,
+					});
+					history.push('/restaurantinformationinput');
+				}
 			})
 			.catch((err) => {
 				console.log(err.request.response);

@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { IMAGE_BASE_URL, SERVER_URL } from '../config';
 import { Button, FormControl, InputLabel, Paper, Select, TextField } from '@material-ui/core';
-import { Restaurant, OpeningHour } from '../types/RestaurantTypes';
+import { Restaurant, OpeningHour, Comment } from '../types/RestaurantTypes';
 import UserContext from '../contexts/UserContext';
 import AddressSearch from './AddressSearchComponent';
 import { makeStyles, createStyles } from '@material-ui/core';
 import { Link, NavLink, useRouteMatch } from 'react-router-dom';
 import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
+import RestaurantComment from './RestaurantComment';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -86,6 +87,12 @@ function RestaurantManagement() {
 			console.log(error.response.data.message);
 		}
 	};
+	const updateComments = (comments: Comment[]) => {
+		setRestaurant({
+			...restaurant,
+			comments: comments,
+		});
+	};
 
 	return (
 		<div className={classes.rootDiv}>
@@ -105,14 +112,7 @@ function RestaurantManagement() {
 							style={{ maxWidth: '25vw', maxHeight: '50vh' }}
 						/>
 					</div>
-					<input
-						type="file"
-						onChange={(e) => {
-							console.log(e.target.files);
-							setImage(e.target.files && e.target.files[0]);
-						}}
-						hidden
-					/>
+					<input type="file" onChange={(e) => setImage(e.target.files && e.target.files[0])} hidden />
 				</Button>
 				<div> 가게 대표 이미지 </div>
 				<div>
@@ -213,6 +213,16 @@ function RestaurantManagement() {
 			</div>
 			<div>
 				<Link to={`${match.url}/add-menu`}> {console.log(match)}메뉴 추가하기</Link>
+			</div>
+			<div>
+				{restaurant._id && restaurant.comments && (
+					<RestaurantComment
+						restaurantId={restaurant._id}
+						restaurantName={restaurant.name}
+						comments={restaurant.comments}
+						updateComments={updateComments}
+					></RestaurantComment>
+				)}
 			</div>
 		</div>
 	);
