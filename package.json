@@ -16,6 +16,7 @@
     "axios": "^0.21.1",
     "moment": "^2.29.1",
     "react": "^17.0.1",
+    "react-cookie": "^4.0.3",
     "react-daum-postcode": "^2.0.2",
     "react-dom": "^17.0.1",
     "react-new-window": "^0.1.2",
