@@ -42,7 +42,7 @@ function App() {
 					/>
 					<Route path="/AdminManagement" component={AdminManagementRouter} />
 					<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
-					<Route exact path="/RestaurantManagement" component={RestaurantManagementPage} />
+					<Route path="/RestaurantManagement" component={RestaurantManagementPage} />
 					<Route exact path="/RestaurantList/:categoryId" component={RestaurantListPage} />
 					<Route exact path="/Restaurant/:restaurantId" component={RestaurantPage} />
 					<Route exact path="/SignUp" component={SignUpPage} />

@@ -1,4 +1,5 @@
 export interface Menu {
+	_id?: string,
 	name: string;
 	description: string;
 	sizes: MenuSize[];
@@ -32,6 +33,7 @@ export interface Restaurant {
 	name: string;
 	category: string;
 	description: string;
+	image?: string;
 	telephone: string;
 	menus: Menu[];
 	openingHours: OpeningHour[];
