@@ -214,7 +214,7 @@ function RestaurantPage(props: Props) {
 												<IconButton
 													aria-label="update"
 													onClick={() => {
-														setUpdateCommentBody('');
+														setUpdateCommentBody(e.body);
 														setUpdateCommentIndex(index);
 													}}
 												>
