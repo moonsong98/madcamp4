@@ -13,6 +13,7 @@ interface MatchParams {
 
 interface Props {
 	categoryId: string;
+	searchText: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,52 +48,73 @@ function RestaurantListPage(props: Props) {
 	const curr = new Date();
 	const today = curr.getDay();
 	const url = `${SERVER_URL}/restaurant?category=${encodeURI(props.categoryId)}`;
+	const allRestaurantUrl = `${SERVER_URL}/restaurant`;
 	const [restaurantList, setRestaurantList] = useState<RestaurantResponseType[]>([]);
 	const history = useHistory();
 	useEffect(() => {
-		axios({
-			method: 'get',
-			url,
-		}).then((res) => {
-			const resultRestaurantList: RestaurantResponseType[] = [];
-			res.data.forEach((e: any) => {
-				resultRestaurantList.push({
-					_id: e._id,
-					name: e.name,
-					description: e.description,
-					openingHours: e.openingHours,
-				});
-			});
-			setRestaurantList(resultRestaurantList);
-		});
+		props.categoryId.length === 0
+			? axios({
+					method: 'get',
+					url: allRestaurantUrl,
+			  }).then((res) => {
+					const resultRestaurantList: RestaurantResponseType[] = [];
+					res.data.forEach((e: any) => {
+						resultRestaurantList.push({
+							_id: e._id,
+							name: e.name,
+							description: e.description,
+							openingHours: e.openingHours,
+						});
+					});
+					setRestaurantList(resultRestaurantList);
+			  })
+			: axios({
+					method: 'get',
+					url,
+			  }).then((res) => {
+					const resultRestaurantList: RestaurantResponseType[] = [];
+					res.data.forEach((e: any) => {
+						resultRestaurantList.push({
+							_id: e._id,
+							name: e.name,
+							description: e.description,
+							openingHours: e.openingHours,
+						});
+					});
+					setRestaurantList(resultRestaurantList);
+			  });
 	}, [url]);
 	return (
 		<div className={classes.root}>
-			{restaurantList.map((e, index) => {
-				return (
-					<div key={index}>
-						<Button
-							className={classes.contianter}
-							variant="outlined"
-							onClick={() => {
-								history.push(`/restaurant/${e._id}`);
-							}}
-						>
-							<div className={classes.restaurant}>
-								<img className={classes.image} src={restaurantDefaultImage} alt="Restaurant" />
-								<div>{e.name}</div>
-								<div>{e.description}</div>
-								{e.openingHours[today] && (
-									<div>
-										<p>{e.openingHours[today].openTime}</p>
-										<p>{e.openingHours[today].closeTime}</p>
-									</div>
-								)}
-							</div>
-						</Button>
-					</div>
-				);
-			})}
+			{restaurantList
+				.filter((e) => {
+					return e.name.includes(props.searchText);
+				})
+				.map((e, index) => {
+					return (
+						<div key={index}>
+							<Button
+								className={classes.contianter}
+								variant="outlined"
+								onClick={() => {
+									history.push(`/restaurant/${e._id}`);
+								}}
+							>
+								<div className={classes.restaurant}>
+									<img className={classes.image} src={restaurantDefaultImage} alt="Restaurant" />
+									<div>{e.name}</div>
+									<div>{e.description}</div>
+									{e.openingHours[today] && (
+										<div>
+											<p>{e.openingHours[today].openTime}</p>
+											<p>{e.openingHours[today].closeTime}</p>
+										</div>
+									)}
+								</div>
+							</Button>
+						</div>
+					);
+				})}
 		</div>
 	);
 }

@@ -7,6 +7,7 @@ import UserContext from '../contexts/UserContext';
 import { useHistory } from 'react-router-dom';
 import { CategoryResponseType } from '../types/ResponseTypes';
 import RestaurantListPage from './RestaurantListPage';
+import SearchBarContext from '../contexts/SearchBarContext';
 
 const defaultProps = {
 	style: { width: '6rem', height: '4rem' },
@@ -27,8 +28,9 @@ function CategoryListPage() {
 	const url = `${SERVER_URL}/category`;
 	const classes = useStyles();
 	const history = useHistory();
-	const [categoryId, setCategoryId] = useState<string | null>(null);
+	const [categoryId, setCategoryId] = useState<string>('');
 	const { userStatus } = useContext(UserContext);
+	const { searchText } = useContext(SearchBarContext);
 	const [categoryList, setCategoryList] = useState<CategoryResponseType[]>([]);
 	useEffect(() => {
 		axios({ method: 'get', url }).then((res: AxiosResponse<CategoryResponseType[]>) => {
@@ -44,12 +46,20 @@ function CategoryListPage() {
 		<div>
 			<Paper>
 				<div className={classes.root}>
+					<Button
+						{...defaultProps}
+						onClick={() => {
+							setCategoryId('');
+						}}
+					>
+						<Box m="auto">{`전체`}</Box>
+					</Button>
+
 					{categoryList.map((e, index) => {
 						return (
 							<Button
 								{...defaultProps}
 								onClick={() => {
-									// history.push(`/RestaurantList/${e._id}`);
 									setCategoryId(e._id);
 								}}
 							>
@@ -59,7 +69,7 @@ function CategoryListPage() {
 					})}
 				</div>
 			</Paper>
-			{categoryId && <RestaurantListPage categoryId={categoryId} />}
+			<RestaurantListPage categoryId={categoryId} searchText={searchText} />
 		</div>
 	);
 }

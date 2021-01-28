@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { AccountCircle } from '@material-ui/icons';
 import SearchIcon from '@material-ui/icons/Search';
 import UserContext from '../contexts/UserContext';
+import SearchBarContext from '../contexts/SearchBarContext';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		inputRoot: {
 			color: 'inherit',
+			width: '100%',
 		},
 		inputInput: {
 			padding: theme.spacing(1, 1, 1, 0),
@@ -57,6 +59,7 @@ function Header() {
 	const classes = useStyles();
 	const history = useHistory();
 	const { userStatus, setUserStatus } = useContext(UserContext);
+	const { searchText, setSearchText } = useContext(SearchBarContext);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -87,6 +90,10 @@ function Header() {
 				classes={{
 					root: classes.inputRoot,
 					input: classes.inputInput,
+				}}
+				value={searchText}
+				onChange={(e) => {
+					setSearchText(e.target.value);
 				}}
 				inputProps={{ 'aria-label': 'search' }}
 			/>
