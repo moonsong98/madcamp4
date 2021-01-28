@@ -1,4 +1,5 @@
 export interface Menu {
+	_id?: string,
 	name: string;
 	description: string;
 	sizes: MenuSize[];
@@ -24,15 +25,10 @@ export interface Restaurant {
 	name: string;
 	category: string;
 	description: string;
+	image?: string;
 	telephone: string;
 	menus: Menu[];
 	openingHours: OpeningHour[];
 	location: Location;
 	comment?: [];
-}
-
-export interface MenuModification {
-	newMenus: Menu[];
-	removedMenus: Menu[];
-	modifiedMenus: Menu[];
 }

@@ -1,40 +1,63 @@
 import { Box, Button, Paper, TextField } from '@material-ui/core';
 import axios from 'axios';
-import { useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { SERVER_URL } from '../config';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import { IMAGE_BASE_URL, SERVER_URL } from '../config';
 import UserContext from '../contexts/UserContext';
 import { Menu } from '../types/RestaurantTypes';
 import menuDefaultImage from '../images/menuDefaultImage.png';
 
-function AddMenu() {
+interface UpdateMenuParam {
+	menu_id: string;
+}
+
+function UpdateMenu() {
+	const match = useRouteMatch<UpdateMenuParam>();
 	const history = useHistory();
 	const { userStatus } = useContext(UserContext);
+	const requestUrl = `${SERVER_URL}/restaurant/${userStatus.restaurantId}/menu/${match.params.menu_id}`;
+
 	const [menu, setMenu] = useState<Menu>({
+		_id: '',
 		name: '',
 		description: '',
-		sizes: [
-			{
-				size: '',
-				price: 0,
-			},
-		],
+		sizes: [],
+		image: '',
 	});
 	const [image, setImage] = useState<File | null>(null);
 
-	const handleSubmit = async () => {
+	useEffect(() => {
+		const getMenu = async () => {
+			try {
+				const response = await axios.get(requestUrl);
+
+				if (response.status === 200) {
+					console.log(response.data);
+					setMenu(response.data);
+				}
+			} catch (error) {
+				console.log(error);
+				alert('메뉴 정보를 가져오는 중에 문제가 발생했습니다.');
+				history.goBack();
+			}
+		};
+		getMenu();
+	}, [history, requestUrl]);
+
+	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		if (!image) return;
 		const form = new FormData();
 		form.append('image', image);
+
 		form.append('menu', JSON.stringify(menu));
 
 		try {
-			const response = await axios.post(`${SERVER_URL}/restaurant/${userStatus.restaurantId}/menu`, form, {
+			const response = await axios.put(requestUrl, form, {
 				headers: { 'Content-Type': 'multipart/form-data', token: userStatus.accessToken },
 			});
 			console.log(response);
 			if (response.status === 200) {
-				history.push('/RestaurantManagement');
+				history.goBack();
 			} else {
 			}
 		} catch (error) {
@@ -62,23 +85,6 @@ function AddMenu() {
 		});
 	};
 
-	const addSize = () => {
-		const newSizes = menu.sizes;
-		newSizes.push({
-			size: '',
-			price: 0,
-		});
-		setMenu({ ...menu, sizes: newSizes });
-	};
-
-	const removeSize = (index: number) => {
-		const newSizes = menu.sizes.filter((element, i) => i !== index);
-		setMenu({
-			...menu,
-			sizes: newSizes,
-		});
-	};
-
 	return (
 		<div>
 			<Paper>
@@ -86,8 +92,9 @@ function AddMenu() {
 					<div>
 						<Button component="label">
 							<div>
+								{console.log(`${IMAGE_BASE_URL}/menus/${menu.image}`)}
 								<img
-									src={image ? URL.createObjectURL(image) : menuDefaultImage}
+									src={`${IMAGE_BASE_URL}/menus/${menu.image}`}
 									alt="메뉴 이미지"
 									style={{ maxWidth: '25vw', maxHeight: '50vh' }}
 								/>
@@ -127,12 +134,11 @@ function AddMenu() {
 										label={`가격 ${index + 1}`}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSizeChange(e, index)}
 									/>
-									<Button onClick={() => removeSize(index)}>삭제</Button>
+									<Button>삭제</Button>
 								</div>
 							);
 						})}
 					</div>
-					<Button onClick={addSize}> 사이즈 추가하기 </Button>
 				</form>
 			</Paper>
 			<Box>
@@ -143,4 +149,4 @@ function AddMenu() {
 	);
 }
 
-export default AddMenu;
+export default UpdateMenu;
