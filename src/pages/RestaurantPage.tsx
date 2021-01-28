@@ -124,23 +124,27 @@ function RestaurantPage(props: Props) {
 										<ListItemText primary={e.nickname} />
 										<ListItemText primary={e.body} />
 										<ListItemText primary={moment(e.date).format('YYYY-MM-DD-hh-mm-ss')} />
-										<IconButton
-											aria-label="update"
-											onClick={() => {
-												setUpdateCommentBody('');
-												setUpdateCommentIndex(index);
-											}}
-										>
-											<UpdateIcon fontSize="small" />
-										</IconButton>
-										<IconButton
-											aria-label="delete"
-											onClick={() => {
-												setOpenDialogIndex(index);
-											}}
-										>
-											<DeleteIcon fontSize="small" />
-										</IconButton>
+										{e.nickname === userStatus.nickname && (
+											<div>
+												<IconButton
+													aria-label="update"
+													onClick={() => {
+														setUpdateCommentBody('');
+														setUpdateCommentIndex(index);
+													}}
+												>
+													<UpdateIcon fontSize="small" />
+												</IconButton>
+												<IconButton
+													aria-label="delete"
+													onClick={() => {
+														setOpenDialogIndex(index);
+													}}
+												>
+													<DeleteIcon fontSize="small" />
+												</IconButton>
+											</div>
+										)}
 									</ListItem>
 									{updateCommentIndex === index && (
 										<div>
