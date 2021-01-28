@@ -20,6 +20,13 @@ export interface Location {
 	extraAddress: string;
 }
 
+export interface Comment {
+	_id: string;
+	nickname: string;
+	body: string;
+	date: Date;
+}
+
 export interface Restaurant {
 	_id?: string;
 	name: string;
@@ -29,7 +36,7 @@ export interface Restaurant {
 	menus: Menu[];
 	openingHours: OpeningHour[];
 	location: Location;
-	comment?: [];
+	comments?: Comment[];
 	contractExpiredAt?: Date;
 	confirmed?: boolean;
 }

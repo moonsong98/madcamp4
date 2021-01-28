@@ -11,6 +11,7 @@ export interface UserStatus {
 	role: string;
 	isInitialPassword?: boolean;
 	restaurantId?: string;
+	nickname?: string;
 }
 export interface SignUpStatus {
 	username: string;
