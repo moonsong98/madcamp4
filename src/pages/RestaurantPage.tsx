@@ -26,11 +26,31 @@ import UpdateIcon from '@material-ui/icons/Update';
 import MapContainer from '../component/MapContainer';
 import UserContext from '../contexts/UserContext';
 import moment from 'moment';
+import menuDefaultImage from '../images/menuDefaultImage.png';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		rootDiv: {
+			display: 'flex',
+			flexWrap: 'wrap',
+			marginLeft: '10%',
+			marginRight: '10%',
 			flex: 1,
+			flexDirection: 'row',
+			width: '100%',
+		},
+		menu: {
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+		},
+		image: {
+			height: '5rem',
+			width: 'auto',
+		},
+		contianter: {
+			width: '15rem',
+			height: '18rem',
 		},
 	})
 );
@@ -101,7 +121,6 @@ function RestaurantPage(props: Props) {
 			console.log(res);
 		});
 	}, [getRestaurantUrl]);
-	console.log(restaurantInformation);
 	return (
 		<div className={classes.rootDiv}>
 			<List>
@@ -114,6 +133,30 @@ function RestaurantPage(props: Props) {
 				/>
 				<Divider />
 				<MapContainer fullAddress={restaurantInformation.location.fullAddress} name={restaurantInformation.name} />
+				{restaurantInformation.menus.map((e, index) => {
+					return (
+						<Paper>
+							<div key={index} className={classes.menu}>
+								{e.image ? (
+									<img className={classes.image} src={`${SERVER_URL}/image/menus/${e.image}`} alt="Restaurant" />
+								) : (
+									<img className={classes.image} src={menuDefaultImage} alt="Restaurant" />
+								)}
+								<div>{e.name}</div>
+								<div>{e.description}</div>
+								{e.sizes.map((el, indexl) => {
+									return (
+										<div key={indexl}>
+											<div>
+												{el.size} {el.price}
+											</div>
+										</div>
+									);
+								})}
+							</div>
+						</Paper>
+					);
+				})}
 				<Paper>
 					<p>댓글</p>
 					<List>
@@ -282,9 +325,6 @@ function RestaurantPage(props: Props) {
 					</Button>
 				</DialogActions>
 			</Dialog>
-			{restaurantInformation.menus.map((e) => {
-				return <div></div>;
-			})}
 		</div>
 	);
 }
