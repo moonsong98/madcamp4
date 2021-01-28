@@ -8,7 +8,7 @@ import AddressSearch from './AddressSearchComponent';
 import { makeStyles, createStyles } from '@material-ui/core';
 import { Link, NavLink, useRouteMatch } from 'react-router-dom';
 import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
-import RestaurantComment from './RestaurantComment';
+import RestaurantOwnerComment from './RestaurantOwnerComment';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -216,12 +216,12 @@ function RestaurantManagement() {
 			</div>
 			<div>
 				{restaurant._id && restaurant.comments && (
-					<RestaurantComment
+					<RestaurantOwnerComment
 						restaurantId={restaurant._id}
 						restaurantName={restaurant.name}
 						comments={restaurant.comments}
 						updateComments={updateComments}
-					></RestaurantComment>
+					></RestaurantOwnerComment>
 				)}
 			</div>
 		</div>
