@@ -18,10 +18,11 @@ function AdminLoginpage() {
 			data: {
 				username: loginInput.username,
 				password: loginInput.password,
-				role: 'admin',
 			},
 		}).then((res) => {
-			setUserStatus({ ...res.data });
+			if (res.data.role === 'admin') {
+				setUserStatus({ ...res.data });
+			}
 		});
 	};
 

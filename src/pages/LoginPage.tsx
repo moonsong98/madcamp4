@@ -22,14 +22,15 @@ function LoginPage() {
 			data: {
 				username: loginInput.username,
 				password: loginInput.password,
-				role: 'restaurantOwner',
 			},
 			withCredentials: true,
 		})
 			.then((res) => {
 				console.log(res);
-				setUserStatus({ ...res.data });
-				history.push('/');
+				if (res.data.role === 'user' || res.data.role === 'restaurantOwner') {
+					setUserStatus({ ...res.data });
+					history.push('/');
+				}
 			})
 			.catch((error) => {
 				console.log(error.response.data.message);
