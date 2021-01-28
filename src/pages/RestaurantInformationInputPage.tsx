@@ -76,6 +76,7 @@ function RestaurantInformationInputPage() {
 					setRestaurant({ ...restaurant, menus: Object.values(value) });
 				});
 			} catch (err) {
+				console.log('ghghgh');
 				console.error(err);
 			}
 		}

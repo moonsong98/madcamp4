@@ -52,7 +52,7 @@ function App() {
 								)
 							}
 						/>
-						<AdminRoute exact path="/AdminManagement" userStatus={userStatus}>
+						<AdminRoute exact={false} path="/AdminManagement" userStatus={userStatus}>
 							<AdminManagementRouter />
 						</AdminRoute>
 						<RestaurantOwnerRoute exact path="/RestaurantOwnerChangePassword" userStatus={userStatus}>
@@ -69,7 +69,6 @@ function App() {
 									)
 								}
 							/>
-							{/* <RestaurantOwnerChangePasswordPage /> */}
 						</RestaurantOwnerRoute>
 						<RestaurantOwnerRoute exact path="/RestaurantInformationInput" userStatus={userStatus}>
 							<Route
@@ -86,9 +85,8 @@ function App() {
 								}
 							/>
 						</RestaurantOwnerRoute>
-						<RestaurantOwnerRoute exact path="/RestaurantManagement" userStatus={userStatus}>
+						<RestaurantOwnerRoute exact={false} path="/RestaurantManagement" userStatus={userStatus}>
 							<Route
-								exact
 								path="/RestaurantManagement"
 								render={(props) =>
 									userStatus.isInitialPassword ? (
@@ -115,7 +113,7 @@ function App() {
 function AdminRoute(props: { path: string; exact: boolean; userStatus: UserStatus; children: React.ReactChild }) {
 	return (
 		<Route
-			exact
+			exact={props.exact}
 			path={props.path}
 			render={() => (props.userStatus.role === 'admin' ? props.children : <Redirect to={{ pathname: '/' }} />)}
 		/>
@@ -130,7 +128,7 @@ function RestaurantOwnerRoute(props: {
 }) {
 	return (
 		<Route
-			exact
+			exact={props.exact}
 			path={props.path}
 			render={() =>
 				props.userStatus.role === 'restaurantOwner' ? props.children : <Redirect to={{ pathname: '/' }} />

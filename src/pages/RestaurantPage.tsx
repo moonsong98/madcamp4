@@ -31,6 +31,8 @@ import UserContext from '../contexts/UserContext';
 import moment from 'moment';
 import menuDefaultImage from '../images/menuDefaultImage.png';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { useRouteMatch } from 'react-router-dom';
+import { Match } from '@testing-library/react';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -63,14 +65,20 @@ interface MatchParams {
 	restaurantId: string;
 }
 
-interface Props extends RouteComponentProps<MatchParams> {
+// interface MatchProps extends RouteComponentProps<MatchParams> {
+// 	restaurantId: string;
+// }
+interface Props {
 	restaurantId: string;
 }
 
 function RestaurantPage(props: Props) {
 	const classes = useStyles();
+	const match = useRouteMatch<MatchParams>();
 	const { userStatus } = useContext(UserContext);
-	const getRestaurantUrl = `${SERVER_URL}/restaurant/${props.match.params.restaurantId}`;
+	const getRestaurantUrl = props.restaurantId
+		? `${SERVER_URL}/restaurant/${props.restaurantId}`
+		: `${SERVER_URL}/restaurant/${match.params.restaurantId}`;
 	const [comment, setComment] = useState('');
 	const [updateCommentBody, setUpdateCommentBody] = useState('');
 	const [openDialogIndex, setOpenDialogIndex] = useState(-1);
@@ -199,122 +207,124 @@ function RestaurantPage(props: Props) {
 						</Paper>
 					);
 				})}
-				<Paper>
-					<p>댓글</p>
-					<List>
-						{restaurantInformation.comments?.map((e, index) => {
-							return (
-								<div>
-									<ListItem>
-										<ListItemText primary={e.nickname} />
-										<ListItemText primary={e.body} />
-										<ListItemText primary={moment(e.date).format('YYYY-MM-DD-hh-mm-ss')} />
-										{e.nickname === userStatus.nickname && (
+				{!props.restaurantId && (
+					<Paper>
+						<p>댓글</p>
+						<List>
+							{restaurantInformation.comments?.map((e, index) => {
+								return (
+									<div>
+										<ListItem>
+											<ListItemText primary={e.nickname} />
+											<ListItemText primary={e.body} />
+											<ListItemText primary={moment(e.date).format('YYYY-MM-DD-hh-mm-ss')} />
+											{e.nickname === userStatus.nickname && (
+												<div>
+													<IconButton
+														aria-label="update"
+														onClick={() => {
+															setUpdateCommentBody(e.body);
+															setUpdateCommentIndex(index);
+														}}
+													>
+														<UpdateIcon fontSize="small" />
+													</IconButton>
+													<IconButton
+														aria-label="delete"
+														onClick={() => {
+															setOpenDialogIndex(index);
+														}}
+													>
+														<DeleteIcon fontSize="small" />
+													</IconButton>
+												</div>
+											)}
+										</ListItem>
+										{updateCommentIndex === index && (
 											<div>
-												<IconButton
-													aria-label="update"
+												<p>댓글 수정하기</p>
+												<TextField
+													value={updateCommentBody}
+													onChange={(e) => {
+														setUpdateCommentBody(e.target.value);
+													}}
+												/>
+												<Button
 													onClick={() => {
-														setUpdateCommentBody(e.body);
-														setUpdateCommentIndex(index);
+														if (restaurantInformation.comments) {
+															const deleteCommentUrl = `${SERVER_URL}/restaurant/${restaurantInformation._id}/comment/${e._id}`;
+															axios({
+																method: 'put',
+																url: deleteCommentUrl,
+																data: {
+																	body: updateCommentBody,
+																},
+																headers: {
+																	token: userStatus.accessToken,
+																},
+															}).then(() => {
+																setUpdateCommentIndex(-1);
+																setUpdateCommentBody('');
+																axios({
+																	method: 'get',
+																	url: getRestaurantUrl,
+																}).then((res) => setRestaurantInformation(res.data));
+															});
+														}
 													}}
 												>
-													<UpdateIcon fontSize="small" />
-												</IconButton>
-												<IconButton
-													aria-label="delete"
+													수정
+												</Button>
+												<Button
 													onClick={() => {
-														setOpenDialogIndex(index);
+														setUpdateCommentIndex(-1);
+														setUpdateCommentBody('');
 													}}
 												>
-													<DeleteIcon fontSize="small" />
-												</IconButton>
+													취소
+												</Button>
 											</div>
 										)}
-									</ListItem>
-									{updateCommentIndex === index && (
-										<div>
-											<p>댓글 수정하기</p>
-											<TextField
-												value={updateCommentBody}
-												onChange={(e) => {
-													setUpdateCommentBody(e.target.value);
-												}}
-											/>
-											<Button
-												onClick={() => {
-													if (restaurantInformation.comments) {
-														const deleteCommentUrl = `${SERVER_URL}/restaurant/${restaurantInformation._id}/comment/${e._id}`;
-														axios({
-															method: 'put',
-															url: deleteCommentUrl,
-															data: {
-																body: updateCommentBody,
-															},
-															headers: {
-																token: userStatus.accessToken,
-															},
-														}).then(() => {
-															setUpdateCommentIndex(-1);
-															setUpdateCommentBody('');
-															axios({
-																method: 'get',
-																url: getRestaurantUrl,
-															}).then((res) => setRestaurantInformation(res.data));
-														});
-													}
-												}}
-											>
-												수정
-											</Button>
-											<Button
-												onClick={() => {
-													setUpdateCommentIndex(-1);
-													setUpdateCommentBody('');
-												}}
-											>
-												취소
-											</Button>
-										</div>
-									)}
-								</div>
-							);
-						})}
-					</List>
-					{userStatus.nickname && (
-						<div>
-							<TextField
-								value={comment}
-								onChange={(e) => {
-									setComment(e.target.value);
-								}}
-							/>
-							<Button
-								onClick={() => {
-									const postCommentUrl = `${SERVER_URL}/restaurant/${restaurantInformation._id}/comment`;
-									axios({
-										method: 'post',
-										url: postCommentUrl,
-										data: {
-											body: comment,
-										},
-										headers: {
-											token: userStatus.accessToken,
-										},
-										withCredentials: true,
-									}).then((res) => {
-										setComment('');
+									</div>
+								);
+							})}
+						</List>
+						{userStatus.nickname && (
+							<div>
+								<TextField
+									value={comment}
+									onChange={(e) => {
+										setComment(e.target.value);
+									}}
+								/>
+								<Button
+									onClick={() => {
+										const postCommentUrl = `${SERVER_URL}/restaurant/${restaurantInformation._id}/comment`;
 										axios({
-											method: 'get',
-											url: getRestaurantUrl,
-										}).then((res) => setRestaurantInformation(res.data));
-									});
-								}}
-							>
-								댓글 작성하기
-							</Button>
-						</div>
-					)}
-				</Paper>
+											method: 'post',
+											url: postCommentUrl,
+											data: {
+												body: comment,
+											},
+											headers: {
+												token: userStatus.accessToken,
+											},
+											withCredentials: true,
+										}).then((res) => {
+											setComment('');
+											axios({
+												method: 'get',
+												url: getRestaurantUrl,
+											}).then((res) => setRestaurantInformation(res.data));
+										});
+									}}
+								>
+									댓글 작성하기
+								</Button>
+							</div>
+						)}
+					</Paper>
+				)}
 			</List>
 			<Dialog
 				open={openDialogIndex > -1}

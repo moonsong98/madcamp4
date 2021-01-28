@@ -6,6 +6,7 @@ import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { RestaurantResponseType } from '../types/ResponseTypes';
 import { Button } from '@material-ui/core';
 import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
+import { Restaurant } from '../types/RestaurantTypes';
 
 interface MatchParams {
 	categoryId: string;
@@ -49,7 +50,7 @@ function RestaurantListPage(props: Props) {
 	const today = curr.getDay();
 	const url = `${SERVER_URL}/restaurant?category=${encodeURI(props.categoryId)}`;
 	const allRestaurantUrl = `${SERVER_URL}/restaurant`;
-	const [restaurantList, setRestaurantList] = useState<RestaurantResponseType[]>([]);
+	const [restaurantList, setRestaurantList] = useState<Restaurant[]>([]);
 	const history = useHistory();
 	useEffect(() => {
 		props.categoryId.length === 0
@@ -57,14 +58,9 @@ function RestaurantListPage(props: Props) {
 					method: 'get',
 					url: allRestaurantUrl,
 			  }).then((res) => {
-					const resultRestaurantList: RestaurantResponseType[] = [];
+					const resultRestaurantList: Restaurant[] = [];
 					res.data.forEach((e: any) => {
-						resultRestaurantList.push({
-							_id: e._id,
-							name: e.name,
-							description: e.description,
-							openingHours: e.openingHours,
-						});
+						resultRestaurantList.push(e);
 					});
 					setRestaurantList(resultRestaurantList);
 			  })
@@ -72,14 +68,9 @@ function RestaurantListPage(props: Props) {
 					method: 'get',
 					url,
 			  }).then((res) => {
-					const resultRestaurantList: RestaurantResponseType[] = [];
+					const resultRestaurantList: Restaurant[] = [];
 					res.data.forEach((e: any) => {
-						resultRestaurantList.push({
-							_id: e._id,
-							name: e.name,
-							description: e.description,
-							openingHours: e.openingHours,
-						});
+						resultRestaurantList.push(e);
 					});
 					setRestaurantList(resultRestaurantList);
 			  });
@@ -88,7 +79,7 @@ function RestaurantListPage(props: Props) {
 		<div className={classes.root}>
 			{restaurantList
 				.filter((e) => {
-					return e.name.includes(props.searchText);
+					return e.confirmed && e.name.includes(props.searchText);
 				})
 				.map((e, index) => {
 					return (

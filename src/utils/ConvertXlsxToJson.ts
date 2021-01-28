@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 
 function ConvertXlsxToJson(file: File) {
+	console.log('reachedHere');
 	return new Promise<object>((resolve, reject) => {
 		const fileReader = new FileReader();
 		fileReader.readAsBinaryString(file);
@@ -44,7 +45,9 @@ function parseCsv(str: string): [] {
 			resultString += ']';
 		}
 	});
+	console.log(resultString);
 	const ret = JSON.parse(resultString);
+	console.log(ret);
 	return ret;
 }
 

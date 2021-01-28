@@ -5,6 +5,7 @@ import { RouteComponentProps, useHistory, useRouteMatch } from 'react-router-dom
 import { SERVER_URL } from '../config';
 import UserContext from '../contexts/UserContext';
 import { Restaurant } from '../types/RestaurantTypes';
+import RestaurantPage from './RestaurantPage';
 
 // interface Props {
 // 	index: number;
@@ -19,6 +20,7 @@ interface matchType {
 }
 
 function ConfirmRestaurantPage() {
+	console.log('reached Here');
 	const [restaurant, setRestaurant] = useState<Restaurant>({
 		name: '',
 		category: '',
@@ -94,7 +96,8 @@ function ConfirmRestaurantPage() {
 						});
 				}}
 			>
-				{restaurant?.name && <TextField disabled label="가게명" value={restaurant.name} />}
+				<RestaurantPage restaurantId={match.params.restaurantId} />
+				{/* {restaurant?.name && <TextField disabled label="가게명" value={restaurant.name} />}
 				{restaurant?.category && <TextField disabled label="카테고리" value={restaurant.category} />}
 				{restaurant?.description && <TextField disabled label="가게 설명" value={restaurant.description} />}
 				{restaurant?.telephone && <TextField disabled label="전화번호" value={restaurant.telephone} />}
@@ -133,7 +136,7 @@ function ConfirmRestaurantPage() {
 						label="주소"
 						value={`${restaurant.location.fullAddress} ${restaurant.location.extraAddress}`}
 					/>
-				)}
+				)} */}
 				<Button
 					type="submit"
 					onClick={() => {

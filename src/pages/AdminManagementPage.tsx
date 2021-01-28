@@ -335,7 +335,7 @@ function AdminManagementPage() {
 											style={{ maxHeight: '2rem', minHeight: '2rem' }}
 											onClick={() => {
 												setNotconfirmedItemIndex(index);
-												history.push(`${match.path}confirmRestaurant/${e._id}`);
+												history.push(`${match.path}/confirmRestaurant/${e._id}`);
 											}}
 										>
 											승인하기

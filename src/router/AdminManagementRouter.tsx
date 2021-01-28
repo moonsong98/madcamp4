@@ -5,13 +5,13 @@ import ConfirmRestaurantPage from '../pages/ConfirmRestaurantPage';
 
 function AdminManagementRouter() {
 	const match = useRouteMatch();
-	// console.log(`${match.path}`);
+	console.log(`${match.path}`);
 	return (
 		<div>
 			<Switch>
 				<Route
 					exact
-					path={`${match.path}/`}
+					path={`${match.path}`}
 					render={() => {
 						return <AdminManagementPage />;
 					}}
@@ -24,7 +24,7 @@ function AdminManagementRouter() {
 					}}
 				/>
 				<Route
-					path={`${match.path}/`}
+					path={`${match.path}`}
 					render={() => {
 						return <div>404</div>;
 					}}
