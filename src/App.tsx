@@ -14,41 +14,45 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import Header from './component/Header';
 import UserContext from './contexts/UserContext';
+import SearchBarContext from './contexts/SearchBarContext';
 import { UserStatus } from './types/AuthTypes';
 import RestaurantOwnerChangePasswordPage from './pages/RestaurantOwnerChangePasswordPage';
 
 function App() {
 	const [userStatus, setUserStatus] = useState<UserStatus>({ accessToken: '', role: '' });
+	const [searchText, setSearchText] = useState('');
 	return (
 		<UserContext.Provider value={{ userStatus, setUserStatus }}>
-			<Router>
-				<Header />
-				<Switch>
-					<Route exact path="/" component={CategoryListPage} />
-					<Route exact path="/login" component={LoginPage} />
-					<ProtectedRoute exact path="/RestaurantInformationInput" userStatus={userStatus}>
-						<RestaurantInformationInputPage />
-					</ProtectedRoute>
-					<Route
-						exact
-						path="/AdminLogin"
-						render={(props) =>
-							userStatus.role === 'admin' ? (
-								<Redirect to={{ pathname: '/AdminManagement', state: { from: props.location } }} />
-							) : (
-								<AdminLoginPage />
-							)
-						}
-					/>
-					<Route path="/AdminManagement" component={AdminManagementRouter} />
-					<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
-					<Route path="/RestaurantManagement" component={RestaurantManagementPage} />
-					<Route exact path="/RestaurantList/:categoryId" component={RestaurantListPage} />
-					<Route exact path="/Restaurant/:restaurantId" component={RestaurantPage} />
-					<Route exact path="/SignUp" component={SignUpPage} />
-					<Route path="/" render={() => <div>404</div>} />
-				</Switch>
-			</Router>
+			<SearchBarContext.Provider value={{ searchText, setSearchText }}>
+				<Router>
+					<Header />
+					<Switch>
+						<Route exact path="/" component={CategoryListPage} />
+						<Route exact path="/login" component={LoginPage} />
+						<ProtectedRoute exact path="/RestaurantInformationInput" userStatus={userStatus}>
+							<RestaurantInformationInputPage />
+						</ProtectedRoute>
+						<Route
+							exact
+							path="/AdminLogin"
+							render={(props) =>
+								userStatus.role === 'admin' ? (
+									<Redirect to={{ pathname: '/AdminManagement', state: { from: props.location } }} />
+								) : (
+									<AdminLoginPage />
+								)
+							}
+						/>
+						<Route path="/AdminManagement" component={AdminManagementRouter} />
+						<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
+						<Route exact path="/RestaurantManagement" component={RestaurantManagementPage} />
+						<Route exact path="/RestaurantList/:categoryId" component={RestaurantListPage} />
+						<Route exact path="/Restaurant/:restaurantId" component={RestaurantPage} />
+						<Route exact path="/SignUp" component={SignUpPage} />
+						<Route path="/" render={() => <div>404</div>} />
+					</Switch>
+				</Router>
+			</SearchBarContext.Provider>
 		</UserContext.Provider>
 	);
 }

@@ -20,6 +20,9 @@ import {
 	DialogContentText,
 	DialogActions,
 	IconButton,
+	ListItemIcon,
+	Collapse,
+	Typography,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
@@ -27,6 +30,7 @@ import MapContainer from '../component/MapContainer';
 import UserContext from '../contexts/UserContext';
 import moment from 'moment';
 import menuDefaultImage from '../images/menuDefaultImage.png';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -71,6 +75,7 @@ function RestaurantPage(props: Props) {
 	const [updateCommentBody, setUpdateCommentBody] = useState('');
 	const [openDialogIndex, setOpenDialogIndex] = useState(-1);
 	const [updateCommentIndex, setUpdateCommentIndex] = useState(-1);
+	const [openOpeningHours, setOpenOpeningHours] = useState(false);
 	const [restaurantInformation, setRestaurantInformation] = useState<Restaurant>({
 		name: '',
 		category: '',
@@ -121,6 +126,8 @@ function RestaurantPage(props: Props) {
 			console.log(res);
 		});
 	}, [getRestaurantUrl]);
+	const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토', '일'];
+	const today = new Date().getDay();
 	return (
 		<div className={classes.rootDiv}>
 			<List>
@@ -132,6 +139,41 @@ function RestaurantPage(props: Props) {
 					primary={`가게 주소: ${restaurantInformation.location.fullAddress} ${restaurantInformation.location.extraAddress}`}
 				/>
 				<Divider />
+				<ListItem
+					button
+					onClick={() => {
+						setOpenOpeningHours(!openOpeningHours);
+					}}
+				>
+					<ListItemText
+						primary={`${dayOfWeek[today]} 여는 시간: ${restaurantInformation.openingHours[today].openTime} 닫는 시간: ${
+							restaurantInformation.openingHours[new Date().getDay()].closeTime
+						}`}
+					/>
+					{openOpeningHours ? <ExpandLess /> : <ExpandMore />}
+				</ListItem>
+				<Collapse in={openOpeningHours} timeout="auto" unmountOnExit>
+					<List component="div" disablePadding>
+						{restaurantInformation.openingHours.map((e, index) => {
+							return index === new Date().getDay() ? (
+								<ListItemText
+									key={index}
+									primary={
+										<Typography
+											style={{ fontWeight: 'bold' }}
+										>{`${dayOfWeek[index]} 여는 시간: ${e.openTime} 닫는 시간: ${e.closeTime}`}</Typography>
+									}
+								/>
+							) : (
+								<ListItemText
+									key={index}
+									primary={`${dayOfWeek[index]} 여는 시간: ${e.openTime} 닫는 시간: ${e.closeTime}`}
+								/>
+							);
+						})}
+					</List>
+				</Collapse>
+
 				<MapContainer fullAddress={restaurantInformation.location.fullAddress} name={restaurantInformation.name} />
 				{restaurantInformation.menus.map((e, index) => {
 					return (
@@ -172,7 +214,7 @@ function RestaurantPage(props: Props) {
 												<IconButton
 													aria-label="update"
 													onClick={() => {
-														setUpdateCommentBody('');
+														setUpdateCommentBody(e.body);
 														setUpdateCommentIndex(index);
 													}}
 												>
