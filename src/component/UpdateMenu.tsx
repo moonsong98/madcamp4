@@ -45,9 +45,8 @@ function UpdateMenu() {
 	}, [history, requestUrl]);
 
 	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		if (!image) return;
 		const form = new FormData();
-		form.append('image', image);
+		if (image) form.append('image', image);
 
 		form.append('menu', JSON.stringify(menu));
 
@@ -82,6 +81,23 @@ function UpdateMenu() {
 		setMenu({
 			...menu,
 			sizes: tempSizes,
+		});
+	};
+
+	const addSize = () => {
+		const newSizes = menu.sizes;
+		newSizes.push({
+			size: '',
+			price: 0,
+		});
+		setMenu({ ...menu, sizes: newSizes });
+	};
+
+	const removeSize = (index: number) => {
+		const newSizes = menu.sizes.filter((element, i) => i !== index);
+		setMenu({
+			...menu,
+			sizes: newSizes,
 		});
 	};
 
@@ -134,11 +150,12 @@ function UpdateMenu() {
 										label={`가격 ${index + 1}`}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSizeChange(e, index)}
 									/>
-									<Button>삭제</Button>
+									<Button onClick={() => removeSize(index)}>삭제</Button>
 								</div>
 							);
 						})}
 					</div>
+					<Button onClick={addSize}> 사이즈 추가하기 </Button>
 				</form>
 			</Paper>
 			<Box>
