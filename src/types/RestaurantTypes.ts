@@ -1,7 +1,7 @@
 export interface Menu {
 	name: string;
 	description: string;
-	sizes: [MenuSize];
+	sizes: MenuSize[];
 	image?: string;
 }
 
@@ -21,6 +21,7 @@ export interface Location {
 }
 
 export interface Restaurant {
+	_id?: string;
 	name: string;
 	category: string;
 	description: string;
@@ -29,6 +30,8 @@ export interface Restaurant {
 	openingHours: OpeningHour[];
 	location: Location;
 	comment?: [];
+	contractExpiredAt?: Date;
+	confirmed?: boolean;
 }
 
 export interface MenuModification {

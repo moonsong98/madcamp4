@@ -8,6 +8,7 @@ import { SERVER_URL } from '../config';
 
 function LoginPage() {
 	const history = useHistory();
+	const errorMessage = '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.';
 	const { setUserStatus } = useContext(UserContext);
 	const [loginInput, setLoginInput] = useState<LoginInput>({
 		username: '',

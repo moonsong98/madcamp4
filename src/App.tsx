@@ -7,6 +7,7 @@ import RestaurantInformationInputPage from './pages/RestaurantInformationInputPa
 import RestaurantManagementPage from './pages/RestaruantManagementPage';
 import RestaurantListPage from './pages/RestaurantListPage';
 import RestaurantPage from './pages/RestaurantPage';
+import AdminManagementRouter from './router/AdminManagementRouter';
 import AdminManagementPage from './pages/AdminManagementPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import LoginPage from './pages/LoginPage';
@@ -39,7 +40,7 @@ function App() {
 							)
 						}
 					/>
-					<Route exact path="/AdminManagement" component={AdminManagementPage} />
+					<Route path="/AdminManagement" component={AdminManagementRouter} />
 					<Route exact path="/RestaurantOwnerChangePassword" component={RestaurantOwnerChangePasswordPage} />
 					<Route exact path="/RestaurantManagement" component={RestaurantManagementPage} />
 					<Route exact path="/RestaurantList/:categoryId" component={RestaurantListPage} />
