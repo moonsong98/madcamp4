@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Modal, TextField } from '@material-ui/core';
 import DaumPostCode from 'react-daum-postcode';
 import { Restaurant } from '../types/RestaurantTypes';
 import RestaurantInformationInputPage from '../pages/RestaurantInformationInputPage';
@@ -52,43 +52,43 @@ function AddressSearch(props: Props) {
 	};
 
 	return (
-		<div className="modalRow">
-			<div className="modalCell">
-				<div className="cellFirst">
-					<div className="zipCode">{zoneCode}</div>
-					<button
-						type="button"
-						onClick={() => {
-							setOpen(true);
-						}}
-					>
-						<span>우편번호 찾기</span>
-					</button>
-				</div>
+		<Card>
+			<CardContent>
+				주소
+				<Button
+					variant="outlined"
+					onClick={() => {
+						setOpen(true);
+					}}
+					style={{ marginLeft: '10px' }}
+				>
+					주소 찾기
+				</Button>
+			</CardContent>
+			<CardContent>
 				<Modal open={open} onClose={() => setOpen(false)}>
 					<DaumPostCode onComplete={onCompleteHandler} autoClose width={width} height={height} style={modalStyle} />
 				</Modal>
-				<div className="address">
+				<div style={{ marginBottom: '10px', fontSize: '1.8em' }}>
 					{fullAddress.length > 0 ? fullAddress : props.restaurantInformation.location.fullAddress}
 				</div>
-				<div className="addressBox">
-					<input
-						type="text"
-						value={props.restaurantInformation.location.extraAddress}
-						name="address"
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							props.setRestaurantInformation({
-								...props.restaurantInformation,
-								location: {
-									...props.restaurantInformation.location,
-									extraAddress: event.target.value,
-								},
-							});
-						}}
-					/>
-				</div>
-			</div>
-		</div>
+				<TextField
+					type="text"
+					label="상세주소"
+					value={props.restaurantInformation.location.extraAddress}
+					name="address"
+					onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+						props.setRestaurantInformation({
+							...props.restaurantInformation,
+							location: {
+								...props.restaurantInformation.location,
+								extraAddress: event.target.value,
+							},
+						});
+					}}
+				/>
+			</CardContent>
+		</Card>
 	);
 }
 

@@ -1,10 +1,12 @@
 import {
 	Button,
+	Container,
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
+	Grid,
 	IconButton,
 	List,
 	ListItem,
@@ -12,6 +14,7 @@ import {
 	Paper,
 	TextField,
 } from '@material-ui/core';
+import { Create, Send } from '@material-ui/icons';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
 import axios from 'axios';
@@ -116,7 +119,7 @@ function RestaurantOwnerComment({ restaurantId, restaurantName, comments, update
 													setUpdateCommentIndex(index);
 												}}
 											>
-												<UpdateIcon fontSize="small" />
+												<Create fontSize="small" />
 											</IconButton>
 											<IconButton
 												aria-label="delete"
@@ -153,17 +156,27 @@ function RestaurantOwnerComment({ restaurantId, restaurantName, comments, update
 						);
 					})}
 				</List>
-				{userStatus.role && (
-					<div>
-						<TextField
-							value={newComment}
-							onChange={(e) => {
-								setNewComment(e.target.value);
-							}}
-						/>
-						<Button onClick={addComment}>댓글 작성하기</Button>
-					</div>
-				)}
+				<Container style={{ width: '100%', border: '1px solid black', alignItems: 'center', borderRadius: '5px' }}>
+					{userStatus.role && (
+						<Grid container alignItems="center" spacing={2}>
+							<Grid item>댓글 입력:</Grid>
+							<Grid item>
+								<TextField
+									style={{ width: '100%' }}
+									value={newComment}
+									onChange={(e) => {
+										setNewComment(e.target.value);
+									}}
+								/>
+							</Grid>
+							<Grid item>
+								<IconButton onClick={addComment}>
+									<Send color="primary" />
+								</IconButton>
+							</Grid>
+						</Grid>
+					)}
+				</Container>
 			</Paper>
 			<Dialog
 				open={openDialogIndex > -1}
@@ -180,7 +193,7 @@ function RestaurantOwnerComment({ restaurantId, restaurantName, comments, update
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={deleteComment} color="primary">
-						댓글 삭제
+						삭제
 					</Button>
 					<Button
 						onClick={() => {

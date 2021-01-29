@@ -1,7 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { IMAGE_BASE_URL, SERVER_URL } from '../config';
-import { Button, FormControl, InputLabel, Paper, Select, TextField } from '@material-ui/core';
+import {
+	Button,
+	Container,
+	FormControl,
+	Grid,
+	IconButton,
+	InputLabel,
+	Paper,
+	Select,
+	Tab,
+	Tabs,
+	TextField,
+} from '@material-ui/core';
 import { Restaurant, OpeningHour, Comment } from '../types/RestaurantTypes';
 import UserContext from '../contexts/UserContext';
 import AddressSearch from './AddressSearchComponent';
@@ -9,17 +21,28 @@ import { makeStyles, createStyles } from '@material-ui/core';
 import { Link, NavLink, useRouteMatch } from 'react-router-dom';
 import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
 import RestaurantOwnerComment from './RestaurantOwnerComment';
+import { Add, Create, Delete } from '@material-ui/icons';
 
 const useStyles = makeStyles(() =>
 	createStyles({
 		rootDiv: {
 			display: 'flex',
+			justifyContent: 'center',
+			flexDirection: 'column',
+			// maxWidth: '100px',
 		},
-		formControl: {
-			minWidth: 120,
+		item: {
+			flex: 1,
 		},
 	})
 );
+
+interface TabPanelProps {
+	children?: React.ReactNode;
+	dir?: string;
+	index: any;
+	value: any;
+}
 
 function RestaurantManagement() {
 	const match = useRouteMatch();
@@ -39,6 +62,11 @@ function RestaurantManagement() {
 	};
 	const [restaurant, setRestaurant] = useState<Restaurant>(initialRestaurnt);
 	const [image, setImage] = useState<File | null>(null);
+	const [tabnum, setTabnum] = useState(0);
+
+	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+		setTabnum(newValue);
+	};
 
 	const dayOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 	const url = `${SERVER_URL}/restaurant/${userStatus.restaurantId}`;
@@ -96,143 +124,212 @@ function RestaurantManagement() {
 
 	return (
 		<div className={classes.rootDiv}>
-			{restaurant.confirmed ? (
-				<Button variant="outlined" color="primary">
-					승인됨
-				</Button>
-			) : (
-				<Button variant="outlined" color="secondary">
-					승인 대기중
-				</Button>
-			)}
-			<div>
-				<Button component="label">
-					<div>
-						{console.log(`${IMAGE_BASE_URL}/restaurants/${restaurant.image}`)}
-						<img
-							src={
-								image
-									? URL.createObjectURL(image)
-									: restaurant.image
-									? `${IMAGE_BASE_URL}/restaurants/${restaurant.image}`
-									: restaurantDefaultImage
-							}
-							alt="가게 대표 이미지"
-							style={{ maxWidth: '25vw', maxHeight: '50vh' }}
-						/>
-					</div>
-					<input type="file" onChange={(e) => setImage(e.target.files && e.target.files[0])} hidden />
-				</Button>
-				<div> 가게 대표 이미지 </div>
-				<div>
-					<TextField disabled value={restaurant.name} label="가게 이름" />
-				</div>
-				<div>
-					<TextField disabled value={restaurant.category} label="카테고리" />
-				</div>
-				<div>
-					<TextField
-						label="가게 설명"
-						placeholder="가게 설명 입력해주세요"
-						value={restaurant.description}
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							setRestaurant({ ...restaurant, description: event.target.value });
-						}}
-						multiline={true}
-					/>
-				</div>
-				<div>
-					<TextField
-						label="전화번호"
-						type="tel"
-						placeholder="전화번호를 입력해주세요"
-						value={restaurant.telephone}
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-							setRestaurant({ ...restaurant, telephone: event.target.value });
-						}}
-					/>
-				</div>
-				<div>
-					{dayOfWeek.map((e, index) => {
-						return (
-							<div key={index}>
-								{e}
-								<TextField
-									label="여는 시간"
-									type="time"
-									value={restaurant.openingHours[index].openTime}
-									InputLabelProps={{
-										shrink: true,
-									}}
-									inputProps={{
-										step: 300, // 5 min
-									}}
-									onChange={(e) => {
-										const newOpeningHours = restaurant.openingHours;
-										newOpeningHours[index].openTime = e.target.value;
-										setRestaurant({
-											...restaurant,
-											openingHours: newOpeningHours,
-										});
-									}}
-								/>
-								<TextField
-									label="닫는 시간"
-									type="time"
-									value={restaurant.openingHours[index].closeTime}
-									InputLabelProps={{
-										shrink: true,
-									}}
-									inputProps={{
-										step: 300, // 5 min
-									}}
-									onChange={(e) => {
-										const newOpeningHours = restaurant.openingHours;
-										newOpeningHours[index].closeTime = e.target.value;
-										setRestaurant({
-											...restaurant,
-											openingHours: newOpeningHours,
-										});
-									}}
-								/>
-							</div>
-						);
-					})}
-				</div>
-				<AddressSearch restaurantInformation={restaurant} setRestaurantInformation={setRestaurant} />
-				<Button onClick={handleSubmit}> 수정 </Button>
-			</div>
-			<div>
-				{restaurant.menus.map((e, index) => {
-					return (
-						<div key={index}>
-							<Paper style={{ margin: '20px' }}>
-								<Button>
-									<Link to={`${match.url}/update-menu/${e._id}`}>메뉴 수정하기</Link>
-								</Button>
-								<Button onClick={() => deleteMenu(index)}>메뉴 삭제하기</Button>
+			<Container>
+				<Container style={{ width: '100%', alignItems: 'center' }}>
+					<Tabs
+						centered
+						value={tabnum}
+						indicatorColor="primary"
+						textColor="primary"
+						onChange={handleChange}
+						aria-label="simple tabs example"
+					>
+						<Tab label="가게 정보" fullWidth />
+						<Tab label="메뉴" fullWidth />
+						<Tab label="댓글 관리" fullWidth />
+					</Tabs>
+				</Container>
+				<Paper style={{ padding: '10px' }}>
+					{restaurant.confirmed ? (
+						<Button variant="outlined" color="primary">
+							승인됨
+						</Button>
+					) : (
+						<Button variant="outlined" color="secondary">
+							승인 대기중
+						</Button>
+					)}
+					{tabnum === 0 && (
+						<div className={classes.item}>
+							<Button component="label" style={{ width: '100%' }}>
 								<div>
-									<TextField value={e.name} label="메뉴명" />
-									<TextField value={e.description} label="메뉴설명" />
+									{console.log(`${IMAGE_BASE_URL}/restaurants/${restaurant.image}`)}
+									<img
+										src={
+											image
+												? URL.createObjectURL(image)
+												: restaurant.image
+												? `${IMAGE_BASE_URL}/restaurants/${restaurant.image}`
+												: restaurantDefaultImage
+										}
+										alt="가게 대표 이미지"
+										style={{ maxWidth: '25vw', maxHeight: '50vh' }}
+									/>
 								</div>
-							</Paper>
+								<input type="file" onChange={(e) => setImage(e.target.files && e.target.files[0])} hidden />
+							</Button>
+							<div style={{ width: '100%', textAlign: 'center' }}> 가게 대표 이미지(클릭하여 수정) </div>
+							<Grid container spacing={2}>
+								<Grid item container spacing={2}>
+									<Grid item>
+										<TextField value={restaurant.name} label="가게 이름" />
+									</Grid>
+									<Grid item>
+										<TextField value={restaurant.category} label="카테고리" />
+									</Grid>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										label="가게 설명"
+										placeholder="가게 설명 입력해주세요"
+										style={{ width: '75%' }}
+										value={restaurant.description}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											setRestaurant({ ...restaurant, description: event.target.value });
+										}}
+										multiline={true}
+									/>
+								</Grid>
+								<Grid item>
+									<TextField
+										label="전화번호"
+										type="tel"
+										placeholder="전화번호를 입력해주세요"
+										value={restaurant.telephone}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											setRestaurant({ ...restaurant, telephone: event.target.value });
+										}}
+									/>
+								</Grid>
+								<Grid item>
+									<b> 영업시간</b>
+									<Grid container spacing={2} justify="center">
+										{dayOfWeek.map((e, index) => {
+											return (
+												<Grid item key={index}>
+													<Paper style={{ padding: '10px' }}>
+														<Grid container direction="column" spacing={2}>
+															<Grid item>{e} </Grid>
+															<Grid item>
+																<TextField
+																	label="여는 시간"
+																	type="time"
+																	value={restaurant.openingHours[index].openTime}
+																	InputLabelProps={{
+																		shrink: true,
+																	}}
+																	inputProps={{
+																		step: 300, // 5 min
+																	}}
+																	onChange={(e) => {
+																		const newOpeningHours = restaurant.openingHours;
+																		newOpeningHours[index].openTime = e.target.value;
+																		setRestaurant({
+																			...restaurant,
+																			openingHours: newOpeningHours,
+																		});
+																	}}
+																/>
+															</Grid>
+															<Grid item>
+																<TextField
+																	label="닫는 시간"
+																	type="time"
+																	value={restaurant.openingHours[index].closeTime}
+																	InputLabelProps={{
+																		shrink: true,
+																	}}
+																	inputProps={{
+																		step: 300, // 5 min
+																	}}
+																	onChange={(e) => {
+																		const newOpeningHours = restaurant.openingHours;
+																		newOpeningHours[index].closeTime = e.target.value;
+																		setRestaurant({
+																			...restaurant,
+																			openingHours: newOpeningHours,
+																		});
+																	}}
+																/>
+															</Grid>
+														</Grid>
+													</Paper>
+												</Grid>
+											);
+										})}
+									</Grid>
+								</Grid>
+								<Grid item style={{ width: '100%' }}>
+									<AddressSearch restaurantInformation={restaurant} setRestaurantInformation={setRestaurant} />
+									<Button variant="outlined" onClick={handleSubmit} style={{ float: 'right' }}>
+										수정 완료
+									</Button>
+								</Grid>
+							</Grid>
 						</div>
-					);
-				})}
-			</div>
-			<div>
-				<Link to={`${match.url}/add-menu`}> {console.log(match)}메뉴 추가하기</Link>
-			</div>
-			<div>
-				{restaurant._id && restaurant.comments && (
-					<RestaurantOwnerComment
-						restaurantId={restaurant._id}
-						restaurantName={restaurant.name}
-						comments={restaurant.comments}
-						updateComments={updateComments}
-					></RestaurantOwnerComment>
-				)}
-			</div>
+					)}
+
+					{tabnum === 1 && (
+						<div className={classes.item}>
+							<div>
+								{restaurant.menus.map((e, index) => {
+									return (
+										<Paper key={index} style={{ margin: '20px', padding: '10px' }}>
+											<Grid container alignItems="center" spacing={2}>
+												<Grid item xs={2} style={{ width: '100px', height: '100px' }} justify="center">
+													<Container style={{ width: '100%', height: '100%' }}>
+														<img
+															src={`${IMAGE_BASE_URL}/menus/${e.image}`}
+															style={{ maxWidth: '100%', maxHeight: '100%' }}
+															alt="메뉴 사진"
+														/>
+													</Container>
+												</Grid>
+												<Grid item>
+													<TextField value={e.name} label="메뉴명" />
+												</Grid>
+												<Grid item xs={6}>
+													<TextField value={e.description} fullWidth label="메뉴 설명" />
+												</Grid>
+												<Grid item xs={1}>
+													<Link to={`${match.url}/update-menu/${e._id}`} style={{ float: 'right' }}>
+														<IconButton>
+															<Create />
+														</IconButton>
+													</Link>
+													<IconButton onClick={() => deleteMenu(index)} style={{ float: 'right' }}>
+														<Delete />
+													</IconButton>
+												</Grid>
+											</Grid>
+										</Paper>
+									);
+								})}
+							</div>
+							<div>
+								<Link to={`${match.url}/add-menu`}>
+									<IconButton>
+										<Add />
+									</IconButton>
+								</Link>
+							</div>{' '}
+						</div>
+					)}
+
+					{tabnum === 2 && (
+						<div className={classes.item}>
+							{restaurant._id && restaurant.comments && (
+								<RestaurantOwnerComment
+									restaurantId={restaurant._id}
+									restaurantName={restaurant.name}
+									comments={restaurant.comments}
+									updateComments={updateComments}
+								></RestaurantOwnerComment>
+							)}
+						</div>
+					)}
+				</Paper>
+			</Container>
 		</div>
 	);
 }

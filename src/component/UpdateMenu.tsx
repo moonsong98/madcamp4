@@ -1,4 +1,4 @@
-import { Box, Button, Paper, TextField } from '@material-ui/core';
+import { Box, Button, Container, createStyles, Grid, makeStyles, Paper, TextField, Theme } from '@material-ui/core';
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
@@ -11,7 +11,31 @@ interface UpdateMenuParam {
 	menu_id: string;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+	createStyles({
+		root: {
+			display: 'flex',
+			alignItems: 'center',
+			flexWrap: 'wrap',
+			flex: 1,
+			flexDirection: 'column',
+		},
+		container: {
+			padding: '10px',
+			height: '100%',
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+		},
+		image: {
+			height: '50vh',
+			width: 'auto',
+		},
+	})
+);
+
 function UpdateMenu() {
+	const classes = useStyles();
 	const match = useRouteMatch<UpdateMenuParam>();
 	const history = useHistory();
 	const { userStatus } = useContext(UserContext);
@@ -102,17 +126,17 @@ function UpdateMenu() {
 	};
 
 	return (
-		<div>
-			<Paper>
-				<form>
-					<div>
+		<Container className={classes.root}>
+			<Paper className={classes.container}>
+				<Grid container direction="column" spacing={2}>
+					<Grid item>
 						<Button component="label">
 							<div>
 								{console.log(`${IMAGE_BASE_URL}/menus/${menu.image}`)}
 								<img
-									src={`${IMAGE_BASE_URL}/menus/${menu.image}`}
+									className={classes.image}
+									src={image ? URL.createObjectURL(image) : `${IMAGE_BASE_URL}/menus/${menu.image}`}
 									alt="메뉴 이미지"
-									style={{ maxWidth: '25vw', maxHeight: '50vh' }}
 								/>
 							</div>
 							<input
@@ -124,15 +148,13 @@ function UpdateMenu() {
 								hidden
 							/>
 						</Button>
-						<div> 메뉴 이미지 </div>
-					</div>
-					<div>
+						<div style={{ textAlign: 'center' }}> 메뉴 이미지 </div>
+					</Grid>
+					<Grid item>
 						<TextField name="name" value={menu.name} label="메뉴명" onChange={handleChange} />
-					</div>
-					<div>
 						<TextField name="description" value={menu.description} label="메뉴설명" onChange={handleChange} />
-					</div>
-					<div>
+					</Grid>
+					<Grid item>
 						{menu.sizes.map((element, index) => {
 							console.log(element);
 							return (
@@ -154,15 +176,19 @@ function UpdateMenu() {
 								</div>
 							);
 						})}
-					</div>
+					</Grid>
 					<Button onClick={addSize}> 사이즈 추가하기 </Button>
-				</form>
+					<Box style={{ float: 'right' }}>
+						<Button variant="outlined" onClick={handleSubmit}>
+							확인
+						</Button>
+						<Button variant="outlined" onClick={(e) => history.goBack()}>
+							취소
+						</Button>
+					</Box>
+				</Grid>
 			</Paper>
-			<Box>
-				<Button onClick={handleSubmit}> 확인 </Button>
-				<Button onClick={(e) => history.goBack()}> 취소 </Button>
-			</Box>
-		</div>
+		</Container>
 	);
 }
 
