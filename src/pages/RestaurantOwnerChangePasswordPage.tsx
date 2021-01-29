@@ -4,10 +4,12 @@ import axios from 'axios';
 import UserContext from '../contexts/UserContext';
 import { SERVER_URL } from '../config';
 import { useHistory } from 'react-router-dom';
+import useAuthStatus from '../utils/Cookie';
 
 function RestaurantOwnerChangePasswordPage() {
 	const [newPassword, setNewPassword] = useState('');
 	const { userStatus, setUserStatus } = useContext(UserContext);
+	const [_, setAuthStatus, __] = useAuthStatus();
 	const history = useHistory();
 	const submitHandler = () => {
 		axios({
@@ -22,10 +24,9 @@ function RestaurantOwnerChangePasswordPage() {
 		})
 			.then((res) => {
 				if (res.status === 200) {
-					setUserStatus({
-						...userStatus,
-						isInitialPassword: false,
-					});
+					const newUserStatus = { ...userStatus, isInitialPassword: false };
+					setUserStatus(newUserStatus);
+					setAuthStatus(newUserStatus);
 					history.push('/restaurantinformationinput');
 				}
 			})
