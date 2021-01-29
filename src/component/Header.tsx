@@ -26,11 +26,12 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		search: {
 			position: 'relative',
+			border: '1px solid #e6e6e6',
 			borderRadius: theme.shape.borderRadius,
-			backgroundColor: fade(theme.palette.common.white, 0.15),
-			'&:hover': {
-				backgroundColor: fade(theme.palette.common.white, 0.25),
-			},
+			// backgroundColor: fade(theme.palette.common.white, 0.15),
+			// '&:hover': {
+			// 	backgroundColor: fade(theme.palette.common.white, 0.25),
+			// },
 			width: '50%',
 		},
 		searchIcon: {
@@ -155,10 +156,11 @@ function Header() {
 		);
 
 	return (
-		<AppBar position="static">
+		<AppBar position="static" color="transparent">
 			<Toolbar className={classes.root}>
 				<img
-					className={classes.header}
+					// className={classes.header}
+					style={{ cursor: 'pointer', height: '5rem' }}
 					src={logo}
 					alt="logo"
 					onClick={() => {
