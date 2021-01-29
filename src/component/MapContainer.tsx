@@ -52,7 +52,7 @@ const MapContainer = (props: Props) => {
 
 	return (
 		<div className="App">
-			<div id="map" style={{ width: '30vw', height: '30vh' }} />
+			<div id="map" style={{ width: '87vh', height: '50vh' }} />
 		</div>
 	);
 };

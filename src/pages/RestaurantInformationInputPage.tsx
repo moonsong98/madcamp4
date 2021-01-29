@@ -17,6 +17,7 @@ import AddressSearch from '../component/AddressSearchComponent';
 import UserContext from '../contexts/UserContext';
 import restaurantDefaultImage from '../images/restaurantDefaultImage.png';
 import { useHistory } from 'react-router-dom';
+import useAuthStatus from '../utils/Cookie';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -35,6 +36,7 @@ const greetingMessage = (collegeName: string) =>
 function RestaurantInformationInputPage() {
 	const history = useHistory();
 	const classes = useStyles();
+	const [_, setAuthStatus, __] = useAuthStatus();
 	const { userStatus, setUserStatus } = useContext(UserContext);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [restaurant, setRestaurant] = useState<Restaurant>({
@@ -94,10 +96,9 @@ function RestaurantInformationInputPage() {
 			});
 
 			if (response.status === 200) {
-				setUserStatus({
-					...userStatus,
-					restaurantId: response.data._id,
-				});
+				const newUserStatus = { ...userStatus, restaurantId: response.data._id };
+				setUserStatus(newUserStatus);
+				setAuthStatus(newUserStatus);
 				history.push('/RestaurantManagement');
 			}
 		} catch (error) {

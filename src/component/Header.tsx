@@ -74,9 +74,9 @@ function Header() {
 		setAnchorEl(null);
 	};
 	const handleLogout = () => {
-		handleClose();
 		setUserStatus({ accessToken: '', role: '' });
 		removeAuthStatus();
+		handleClose();
 	};
 	const handleRestaurantManagementMenu = () => {
 		userStatus.restaurantId ? history.push('/RestaurantManagement') : history.push('/RestaurantInformationInput');
